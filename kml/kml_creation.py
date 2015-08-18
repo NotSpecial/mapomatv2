@@ -1,4 +1,5 @@
-from ydc.tools.distances import make_cell_collection
+from kml.distances import make_cell_collection
+from kml.cache import cache_result
 from os import path
 from datetime import datetime
 from colorsys import hsv_to_rgb
@@ -12,6 +13,7 @@ def region(businesses, cells, city, radius):
         businesses.iloc[region_indices]['city'].tolist()))
 
 
+@cache_result('pickles')
 def region_cells(businesses, cells, city, radius):
     region_filter = region(businesses, cells, city, radius)
     region_bizs = businesses[businesses['city'].isin(region_filter)]
