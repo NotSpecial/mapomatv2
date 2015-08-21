@@ -1,14 +1,18 @@
-from kml.distances import make_cell_collection
-from kml.cache import cache_result
+from mapomat.distances import make_cell_collection
+from mapomat.cache import cache_result
 from os import path
+from werkzeug import secure_filename
 from datetime import datetime
 from colorsys import hsv_to_rgb
+import numpy as np
+from simplekml import Kml
+from json import dumps
 
 
 def region(businesses, cells, city, radius):
     random_choice = businesses[businesses['city'] == city][:1].squeeze()
-    region_indices = [item['index'] for item in 
-        cells.get_region(random_choice, radius)]
+    region_indices = [item['index'] for item in
+                      cells.get_region(random_choice, radius)]
     return list(set(
         businesses.iloc[region_indices]['city'].tolist()))
 
@@ -26,7 +30,8 @@ def region_cells(businesses, cells, city, radius):
     for coord in region_cell_coords:
         if coord[0] not in ret:
             ret[coord[0]] = {}
-        ret[coord[0]][coord[1]] = [i['index'] for i in cell_dict[coord[0]][coord[1]]]
+        ret[coord[0]][coord[1]] = [
+            i['index'] for i in cell_dict[coord[0]][coord[1]]]
     return ret, region_bizs
 
 
@@ -46,17 +51,17 @@ def dict_to_kml(kml, borders, cell_dict, color_mapper, *args):
     latitudes = borders[1]
     for x, row in cell_dict.items():
         for y, cell in row.items():
-            if cell is not nan:
+            if cell is not np.nan:
                 make_polygon(kml, 'Cell-{}-{}'.format(x, y),
                              (longitudes[x], latitudes[y]),
-                             (longitudes[x+1], latitudes[y+1]),
+                             (longitudes[x + 1], latitudes[y + 1]),
                              color_mapper(cell, *args))
     return kml
 
 
-def density_kml(city, supercats, subcats, businesses, folder='kml_files',
-              new_cache=False, scaling=(lambda x: x)):
-    
+def density_kml(city, supercats, subcats, businesses,
+                folder='kml_files', new_cache=False, scaling=(lambda x: x)):
+
     def add_folder(kml, df_filter, grouped, region_dict, scaling, index):
         def cell_to_color(value, color, scaling):
             norm_value = scaling(value)
@@ -71,18 +76,19 @@ def density_kml(city, supercats, subcats, businesses, folder='kml_files',
                     .count()
                 # only add cell if there exist such businesses
                 if count > 0:
-                    folder_dict[x][y] = grouped.get_group((x, y))[in_cat]\
-                        ['business_id'].count()
-        
+                    folder_dict[x][y] = (
+                        grouped.get_group((x, y))[in_cat]['business_id']
+                        .count())
+
         # normalizing
-        values = [item for row in folder_dict.values() for item in row.values()]
+        values = [itm for row in folder_dict.values() for itm in row.values()]
         maximum = np.max(values)
         norm_scaling = lambda x: scaling(x / maximum)
 
         # make a kml of polygons
         folder = kml.newfolder(name=name)
         color = split_colors(index, num_colors)
-        folder = dict_to_kml(folder, cells.get_borders(), folder_dict, 
+        folder = dict_to_kml(folder, cells.get_borders(), folder_dict,
                              cell_to_color, color, norm_scaling)
         return kml
 
@@ -106,7 +112,7 @@ def density_kml(city, supercats, subcats, businesses, folder='kml_files',
 
     kml = Kml()
 
-    i = 0 # indexer for different colors
+    i = 0  # indexer for different colors
     # iterate through super categories
     for supercat, name in supercats.items():
         in_cat = (region_businesses['super_category'] == supercat)
@@ -120,8 +126,16 @@ def density_kml(city, supercats, subcats, businesses, folder='kml_files',
         i += 1
 
     # save kml
-    kml_path = path.join(folder, city + '_' + 
-        datetime.now().strftime('%Y%M%dT%H%M%S') + '.kml')
+    kml_name = secure_filename(city) + "_"
+    for key in supercats:
+        kml_name += "x%i" % key
+    kml_name += "_"
+    for key in subcats:
+        kml_name += "x%iy%i" % (key[0], key[1])
+    kml_name += ".kml"
+
+    kml_name = secure_filename(kml_name)
+    kml_path = path.join(folder, kml_name)
     kml.save(kml_path)
 
     # make legend
@@ -132,5 +146,6 @@ def density_kml(city, supercats, subcats, businesses, folder='kml_files',
         if i < len(supercats):
             legend[supercat_names[i]] = split_colors(i, num_colors)
         else:
-            legend[subcat_names[i - len(supercats)]] = split_colors(i, num_colors)
-    return kml_path, legend
+            legend[subcat_names[i - len(supercats)]] = split_colors(
+                i, num_colors)
+    return kml_name, legend

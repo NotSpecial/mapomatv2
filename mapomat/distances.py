@@ -1,10 +1,10 @@
 from geopy.distance import vincenty
 from numpy import linspace
-from math import exp, radians, cos, sin, asin, sqrt
+from math import exp
 import pandas as pd
 from operator import itemgetter
 from haversine import haversine
-from kml.cache import cache_result
+from mapomat.cache import cache_result
 
 
 class CellCollection:
@@ -68,10 +68,10 @@ class CellCollection:
         """Finds the Cell the given businesses would belong to
         :returns: Coordinates as a Tuple"""
         x = self.longitudes.searchsorted(business.longitude) - 1
-        y = self.latitudes.searchsorted(business.latitude) - 1 
+        y = self.latitudes.searchsorted(business.latitude) - 1
         return x, y
 
-    #@profile
+    # @profile
     def get_neighbours(self, business, num=5, add_self=False):
         """Finds neighbours of a given business
         :param business: the business we search neighbours for
@@ -147,10 +147,10 @@ class CellCollection:
                       ),
             haversine((self.longitudes[cell[0]], self.latitudes[cell[1]]),
                       (self.longitudes[cell[0]], self.latitudes[cell[1] + 1]))
-            ))
-        search_frame = {'long_down': cell[0] - cell_radius, 
+        ))
+        search_frame = {'long_down': cell[0] - cell_radius,
                         'long_up': cell[0] + 1 + cell_radius,
-                        'lat_down': cell[1] - cell_radius, 
+                        'lat_down': cell[1] - cell_radius,
                         'lat_up': cell[1] + 1 + cell_radius}
         if search_frame['long_down'] < 0:
             search_frame['long_down'] = 0
