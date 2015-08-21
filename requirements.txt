@@ -2,14 +2,14 @@ decorator==4.0.2
 Flask==0.10.1
 geopy==1.10.0
 haversine==0.4.2
-itsdangerous==0.2
+itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
 networkx==1.10
 numpy==1.9.2
 pandas==0.16.2
-python-dateutil==
-python-louvain==0
+python-dateutil==2.4.2
+python-louvain==0.3
 pytz==2015.4
 requests==2.7.0
 simplekml==1.2.8
