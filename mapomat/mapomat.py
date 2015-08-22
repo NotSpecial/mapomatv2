@@ -1,8 +1,7 @@
-from flask import Flask, render_template, request, send_file
-from werkzeug import secure_filename
+from flask import Flask, render_template, request
 
 from ast import literal_eval
-from os import path, getcwd, makedirs
+from os import path, makedirs
 
 from mapomat.import_data import import_businesses as get_busi
 from mapomat.supercats import add_supercats as get_cats
@@ -78,9 +77,9 @@ def result():
     if (len(sup) > 0) or (len(sub) > 0):
         name, legend = density_kml(city, supercats, subcats, app.config['df'])
 
-        url = app.config['SERVERADDRESS'] + name
+        url = app.config['KML_URL'] + name
     else:
-        url = "https://drive.google.com/uc?export=download&id=0B_tv52VuXlAceXBsNmZmdVVuUEU"
+        url = ""
         legend = {}
 
     return render_template('kml.html',
@@ -89,16 +88,6 @@ def result():
                            kmlurl=url,
                            city=city,
                            legend=legend)
-
-
-@app.route("/kml/<filename>", methods=['GET'])
-def deliver(filename):
-    filename = secure_filename(filename)
-    kml_path = path.join(getcwd(), "kml_files", filename)
-    if path.exists(kml_path):
-        return send_file(kml_path)
-    else:
-        return "File not found!"
 
 if __name__ == "__main__":
     app.run()
