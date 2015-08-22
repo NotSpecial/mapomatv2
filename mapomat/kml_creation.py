@@ -1,12 +1,10 @@
-from mapomat.distances import make_cell_collection
-from mapomat.cache import cache_result
+from .distances import make_cell_collection
+from .cache import cache_result
 from os import path
 from werkzeug import secure_filename
-from datetime import datetime
 from colorsys import hsv_to_rgb
 import numpy as np
 from simplekml import Kml
-from json import dumps
 
 
 def region(businesses, cells, city, radius):

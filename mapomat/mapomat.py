@@ -4,9 +4,9 @@ from flask import Flask, render_template, request
 from ast import literal_eval
 from os import path, makedirs
 
-from mapomat.import_data import import_businesses as get_busi
-from mapomat.supercats import add_supercats as get_cats
-from mapomat.kml_creation import density_kml
+from .import_data import import_businesses as get_busi
+from .supercats import add_supercats as get_cats
+from .kml_creation import density_kml
 
 app = Flask("Map-o-Mat")
 app.config.from_object('config')

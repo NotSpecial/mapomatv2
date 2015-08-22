@@ -4,7 +4,7 @@ from math import exp
 import pandas as pd
 from operator import itemgetter
 from haversine import haversine
-from mapomat.cache import cache_result
+from .cache import cache_result
 
 
 class CellCollection:

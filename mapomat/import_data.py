@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 from os import path
-from mapomat.cache import cache_result
+from .cache import cache_result
 import datetime as dt
 
 DATA_PATH = 'mapomat'
