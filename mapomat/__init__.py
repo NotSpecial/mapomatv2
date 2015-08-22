@@ -1,1 +1,0 @@
-from .mapomat import app
