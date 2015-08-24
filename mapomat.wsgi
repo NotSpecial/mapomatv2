@@ -1,1 +1,1 @@
-from mapomat.mapomat import app as application
+from mapomat.app import app as application

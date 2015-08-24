@@ -4,8 +4,9 @@ from os import path
 from .cache import cache_result
 import datetime as dt
 
-DATA_PATH = 'mapomat'
-PICKLE_PATH = 'pickles'
+_ROOT = path.abspath(path.dirname(__file__))
+DATA_PATH = _ROOT
+PICKLE_PATH = path.join(_ROOT, 'pickles')
 
 BUSINESSES_PATH = path.join(DATA_PATH, 'yelp_academic_dataset_business.json')
 CHECKINS_PATH = path.join(DATA_PATH, 'yelp_academic_dataset_checkin.json')

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
+from werkzeug import secure_filename
 
 from ast import literal_eval
-from os import path, makedirs
+from os import path, makedirs, getcwd
 
 from .import_data import import_businesses as get_busi
 from .supercats import add_supercats as get_cats
 from .kml_creation import density_kml
 
 app = Flask("Map-o-Mat")
-app.config.from_object('config')
+app.config.from_object('mapomat.config')
 
 # Make dir
 if not path.exists("kml_files"):
@@ -89,6 +90,16 @@ def result():
                            kmlurl=url,
                            city=city,
                            legend=legend)
+
+
+@app.route("/kml/<filename>", methods=['GET'])
+def deliver(filename):
+    filename = secure_filename(filename)
+    kml_path = path.join(getcwd(), "kml_files", filename)
+    if path.exists(kml_path):
+        return send_file(kml_path)
+    else:
+        return "File not found!"
 
 if __name__ == "__main__":
     app.run()
