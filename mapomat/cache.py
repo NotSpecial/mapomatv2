@@ -60,7 +60,7 @@ def cache_result(pickle_dir):
                 try:
                     makedirs(pickle_dir)
                 except OSError as exc:  # Python >2.5
-                    if exc.errno == errno.EEXIST and path.isdir(path):
+                    if exc.errno == errno.EEXIST and path.isdir(pickle_dir):
                         pass
                     else:
                         raise
