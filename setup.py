@@ -15,7 +15,9 @@ setup(
     license='MIT',
     platforms=["any"],
     test_suite="amivapi.tests",
-    package_data = {'': ['*.json']},
+    package_data = {
+        '': ['*.json', '*.html']
+    },
     install_requires = [],
     packages=find_packages(),
 )

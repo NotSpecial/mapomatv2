@@ -58,7 +58,7 @@ def dict_to_kml(kml, borders, cell_dict, color_mapper, *args):
 
 
 def density_kml(city, supercats, subcats, businesses,
-                folder='kml_files', new_cache=False, scaling=(lambda x: x)):
+                folder='kml_files', scaling=(lambda x: x)):
 
     def add_folder(kml, df_filter, grouped, region_dict, scaling, index):
         def cell_to_color(value, color, scaling):
@@ -100,7 +100,7 @@ def density_kml(city, supercats, subcats, businesses,
     num_colors = len(supercats) + len(subcats)
 
     # import data
-    cells = make_cell_collection(15, businesses, new_cache=new_cache)
+    cells = make_cell_collection(15, businesses)
     (region_dict, region_businesses) = region_cells(businesses, cells, city, 5)
 
     # add cell coordinate to dataframe, group businesses by cells
