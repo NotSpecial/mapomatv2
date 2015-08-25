@@ -17,7 +17,7 @@ def _hash_frame(df, path="test"):
     return bytes(str(cols + idxs), 'UTF-8')
 
 
-def _get_name(*args, base_path=".", function=None, **kwargs):
+def _get_name(base_path=".", function=None, *args, **kwargs):
     # Get name first
     pickle_hash = hashlib.md5()
     # args
@@ -47,9 +47,9 @@ def _get_name(*args, base_path=".", function=None, **kwargs):
 
 def cache_result(pickle_dir):
     def decorate(function):
-        def decorated(*args,
-                      cache=True,
+        def decorated(cache=True,
                       new_cache=False,
+                      *args,
                       **kwargs):
             if not cache:
                 # No caching, do nothing
