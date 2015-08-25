@@ -15,7 +15,7 @@ def _hash_frame(df, path="test"):
     idxs = sorted(df.index.tolist())
 
     # Return bytes
-    return bytes(str(cols + idxs), 'UTF-8')
+    return str(cols + idxs)
 
 
 def _get_name(base_path=".", function=None, *args, **kwargs):
@@ -27,21 +27,21 @@ def _get_name(base_path=".", function=None, *args, **kwargs):
         if type(arg) == pd.DataFrame:
             pickle_hash.update(_hash_frame(arg))
         else:
-            pickle_hash.update(bytes(str(arg), 'UTF-8'))
+            pickle_hash.update(str(arg))
 
     # Function specific
-    pickle_hash.update(bytes(function.__name__, 'UTF-8'))
-    pickle_hash.update(bytes(getsource(function), 'UTF-8'))
+    pickle_hash.update(function.__name__)
+    pickle_hash.update(getsource(function))
 
     # kwargs
     for key in sorted(kwargs.keys()):
-        pickle_hash.update(bytes(str(key), 'UTF-8'))
+        pickle_hash.update(str(key))
         arg = kwargs[key]
         # Special treatment for dfs because they are huge
         if type(kwargs[key]) == pd.DataFrame:
             pickle_hash.update(_hash_frame(arg))
         else:
-            pickle_hash.update(bytes(str(arg), 'UTF-8'))
+            pickle_hash.update(str(arg))
 
     return path.join(base_path, pickle_hash.hexdigest() + '.pkl')
 
