@@ -7,8 +7,8 @@ How to use:
 
     pip install -r requirements.txt
 
-3. Install mapomat itself, too (needed for wsgi)
+3. Edit config to add path where apache will serve the .kml files (kinda stupid this way. FIXME)
+
+4. Install mapomat itself, too (needed for wsgi)
 
     pip install ./
-
-4. Edit config to add path where apache will serve the .kml files

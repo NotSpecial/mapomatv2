@@ -1,1 +1,1 @@
-KML_URL = "http://localhost:5000/kml/"
+KML_URL = "http://87.106.246.126/mapomat/kml/"

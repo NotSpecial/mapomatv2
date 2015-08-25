@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 from os import path
-from .cache import cache_result
+from cache import cache_result
 import datetime as dt
 
 _ROOT = path.abspath(path.dirname(__file__))

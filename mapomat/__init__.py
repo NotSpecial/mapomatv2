@@ -4,9 +4,8 @@ from werkzeug import secure_filename
 
 from ast import literal_eval
 from os import path, makedirs, getcwd
+import pickle
 
-from .import_data import import_businesses as get_busi
-from .supercats import add_supercats as get_cats
 from .kml_creation import density_kml
 
 _ROOT = path.abspath(path.dirname(__file__))
@@ -14,48 +13,15 @@ temp_fold = path.join(_ROOT, "templates")
 
 app = Flask(__name__, template_folder=temp_fold)
 app.config.from_object('mapomat.config')
-app.config['PROPAGATE_EXCEPTIONS']=True
 
 # Make dir
 if not path.exists("kml_files"):
     makedirs("kml_files")
 
-(busi, box, combos) = get_cats(get_busi(
-    fields=['categories', 'city', 'latitude', 'longitude', 'business_id']))
+with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
+    data = pickle.load(f)
 
-# Correct Montreal/Montréal program
-busi.loc[busi['city'] == u'Montréal', 'city'] = u"Montreal"
-
-# Get cities with over 1000 businesses
-idx = (busi.groupby('city')['categories'].count()
-       .order(ascending=False) > 1000)
-# Use this list to index itself to get only the names
-cities = idx[idx].index.tolist()
-
-latlongdata = busi.groupby('city')[['latitude', 'longitude']].mean()
-citylatlon = {
-    city: {
-        'lat': latlongdata.loc[city, 'latitude'],
-        'lon': latlongdata.loc[city, 'longitude']
-    } for city in cities
-}
-
-super_categories = {key: box[key]['name'] for key in box}
-
-categories = {}
-for superkey in box:
-    subbox = box[superkey]['sub_categories']
-    categories[superkey] = {key: subbox[key]['name'] for key in subbox}
-
-
-app.config.update({
-    'cities': cities,
-    'citylatlon': citylatlon,
-    'super_categories': super_categories,
-    'categories': categories,
-    'df': busi,
-    'combos': combos
-})
+app.config.update(data)
 
 
 @app.route("/", methods=['GET'])

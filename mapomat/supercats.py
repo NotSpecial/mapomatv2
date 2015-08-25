@@ -3,7 +3,7 @@ import numpy as np
 import networkx as nx
 from operator import itemgetter
 import community
-from .cache import cache_result
+from cache import cache_result
 
 
 def _partitions(graph):
