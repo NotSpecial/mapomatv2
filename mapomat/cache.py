@@ -77,7 +77,7 @@ def cache_result(pickle_dir):
                     # Try to read from pickle
                     with open(pickle_file, 'rb') as f:
                         return pickle.load(f)
-                except (FileNotFoundError, AssertionError):
+                except (OSError, AssertionError):
                     # Not found, execute function and save return frame
                     # as pickle
                     ret = function(*args, **kwargs)
