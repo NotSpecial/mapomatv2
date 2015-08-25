@@ -5,6 +5,7 @@ import pickle
 from inspect import getsource
 from os import path
 from os import makedirs
+import errno
 
 PICKLE_PATH = 'pickles'
 
@@ -56,7 +57,13 @@ def cache_result(pickle_dir):
                 return function(*args, **kwargs)
             else:
                 # Create dir if necessary
-                makedirs(pickle_dir, exist_ok=True)
+                try:
+                    makedirs(pickle_dir)
+                except OSError as exc:  # Python >2.5
+                    if exc.errno == errno.EEXIST and path.isdir(path):
+                        pass
+                    else:
+                        raise
 
                 # Get pickle name
                 pickle_file = _get_name(*args,
