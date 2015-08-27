@@ -62,6 +62,18 @@ def result():
                            legend=legend)
 
 
+@app.route("/kmldebug")
+def testsite():
+    city = "Las Vegas"
+    url = "http://87.106.246.126/mapomat/kml/Las_Vegas__x5y1x5y2x5y0.kml"
+    return render_template('kml.html',
+                           lat=app.config['citylatlon'][city]['lat'],
+                           lon=app.config['citylatlon'][city]['lon'],
+                           kmlurl=url,
+                           city=city,
+                           legend={'test': "ffffff"})
+
+
 @app.route("/kml/<filename>", methods=['GET'])
 def deliver(filename):
     filename = secure_filename(filename)
@@ -70,6 +82,3 @@ def deliver(filename):
         return send_file(kml_path)
     else:
         return "File not found!"
-
-if __name__ == "__main__":
-    app.run(debug=True)
