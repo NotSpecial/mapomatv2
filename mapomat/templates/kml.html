@@ -49,12 +49,9 @@
 
     parser.parse();
 
-    var kmlUrl = "{{ kmlurl }}";
+    var kmlUrl = "{{ kml_url }}";
     var kml = new KMLLayer(kmlUrl);
     map.addLayer(kml);
-    kml.on("load", function() {
-      domStyle.set("loading", "display", "none");
-    });
   });
 </script>
 </head>
@@ -69,14 +66,13 @@
     <div class="panel panel-default" id="meta">
       <div class="panel-body" style="background: #666">
         <h3>Results for {{ city }}</h3>
-        <span id="loading"><img src="images/loading_black.gif" /></span>
         <br /><br />
         {% for item in legend %}
         <span style="color: #{{ legend[item] }}">{{ item }}<br />
         {% endfor %}
         <br />
-        <a class="btn btn-default" href="/">Start again</a>
-        <a class="btn btn-default" href="{{ kmlurl }}">Download KML</a>
+        <a class="btn btn-default" href="{{ base_url }}">Start again</a>
+        <a class="btn btn-default" href="{{ kml_url }}">Download KML</a>
       </div>
     <div>
   </div>

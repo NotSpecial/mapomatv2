@@ -23,6 +23,8 @@ with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
 
 app.config.update(data)
 
+app.config['KML_URL'] = app.config['BASE_URL'] + "kml/"
+
 
 @app.route("/", methods=['GET'])
 def hello():
@@ -47,31 +49,25 @@ def result():
     }
 
     if (len(sup) > 0) or (len(sub) > 0):
-        name, legend = density_kml(city, supercats, subcats, app.config['df'])
+        name, legend = density_kml(
+            city,
+            supercats,
+            subcats,
+            app.config['df']
+        )
 
         url = app.config['KML_URL'] + name
     else:
         url = ""
-        legend = {}
+        legend = {"Nothing selected": "ffffff"}
 
     return render_template('kml.html',
                            lat=app.config['citylatlon'][city]['lat'],
                            lon=app.config['citylatlon'][city]['lon'],
-                           kmlurl=url,
+                           base_url=app.config['BASE_URL'],
+                           kml_url=url,
                            city=city,
                            legend=legend)
-
-
-@app.route("/kmldebug")
-def testsite():
-    city = "Las Vegas"
-    url = "http://87.106.246.126/mapomat/kml/Las_Vegas__x5y1x5y2x5y0.kml"
-    return render_template('kml.html',
-                           lat=app.config['citylatlon'][city]['lat'],
-                           lon=app.config['citylatlon'][city]['lon'],
-                           kmlurl=url,
-                           city=city,
-                           legend={'test': "ffffff"})
 
 
 @app.route("/kml/<filename>", methods=['GET'])
