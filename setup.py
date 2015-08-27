@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# license: AGPL, see LICENSE for details. In addition we strongly encourage
+# license: MIT, see LICENSE for details. In addition we strongly encourage
 #          you to buy us beer if we meet and you like the software.
 
 from setuptools import setup, find_packages
