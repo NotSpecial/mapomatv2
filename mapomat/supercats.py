@@ -3,7 +3,6 @@ import numpy as np
 import networkx as nx
 from operator import itemgetter
 import community
-from cache import cache_result
 
 
 def _partitions(graph):
@@ -55,7 +54,6 @@ def _get_cat(data, catlist):
     return catmap
 
 
-@cache_result("pickles")
 def add_supercats(df_in):
     """Requires df with businesses.
     Converts this to graph, then uses louvain method to find clusters
