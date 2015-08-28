@@ -4,7 +4,6 @@ from math import exp
 import pandas as pd
 from operator import itemgetter
 from haversine import haversine
-from .cache import cache_result
 
 
 class CellCollection:
@@ -212,7 +211,6 @@ class CellCollection:
         return str()
 
 
-@cache_result('pickles')
 def make_cell_collection(potenz, businesses):
     return CellCollection(potenz, businesses)
 
