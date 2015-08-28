@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="utf-8">
@@ -7,6 +8,7 @@
 
 <link rel="stylesheet" href="http://js.arcgis.com/3.14/dijit/themes/tundra/tundra.css">
 <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <style>
   html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
   #map { height: 100%; margin: 0; padding: 0; }
@@ -15,15 +17,6 @@
     left: 20px;
     bottom: 20px;
     z-index: 40;
-    /*background: #666;
-    color: #777;
-    padding: 5px;
-    border: 2px solid #666;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    font-family: arial;
-    font-size: 0.9em;*/
   }
   #meta h3 {
     color: #fff;
@@ -35,8 +28,7 @@
     float: right;
   }
 </style>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
 <script src="http://js.arcgis.com/3.14/"></script>
 <script>
   var map;
@@ -57,12 +49,9 @@
 
     parser.parse();
 
-    var kmlUrl = "{{ kmlurl }}";
+    var kmlUrl = "{{ kml_url }}";
     var kml = new KMLLayer(kmlUrl);
     map.addLayer(kml);
-    kml.on("load", function() {
-      domStyle.set("loading", "display", "none");
-    });
   });
 </script>
 </head>
@@ -76,16 +65,16 @@
        data-dojo-props="region:'center'">
     <div class="panel panel-default" id="meta">
       <div class="panel-body" style="background: #666">
-          <h3>Results for {{ city }}</h3>
-          <br /><br />
-          {% for item in legend %}
-          <span style="color: #{{ legend[item] }}">{{ item }}</item><br />
-          {% endfor %}
-          <br />
-          <a class="btn btn-default" href="/">Start again</a>
-          <a class="btn btn-default" href="{{ kmlurl }}">Download KML</a>
+        <h3>Results for {{ city }}</h3>
+        <br /><br />
+        {% for item in legend %}
+        <span style="color: #{{ legend[item] }}">{{ item }}<br />
+        {% endfor %}
+        <br />
+        <a class="btn btn-default" href="{{ base_url }}">Start again</a>
+        <a class="btn btn-default" href="{{ kml_url }}">Download KML</a>
       </div>
-    </div>
+    <div>
   </div>
 </div>
 </body>
