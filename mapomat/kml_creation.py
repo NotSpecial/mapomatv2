@@ -1,4 +1,3 @@
-from .distances import make_cell_collection
 from .cache import cache_result
 from os import path
 from werkzeug import secure_filename
@@ -57,13 +56,25 @@ def dict_to_kml(kml, borders, cell_dict, color_mapper, *args):
     return kml
 
 
-def density_kml(city, supercats, subcats, businesses,
-                folder='kml_files', scaling=(lambda x: x)):
+def density_kml(city, supercats, subcats, businesses, cells,
+                folder='kml_files', scaling=(lambda x: x ** 2)):
 
-    def add_folder(kml, df_filter, grouped, region_dict, scaling, index):
+    num_colors = len(supercats) + len(subcats)
+
+    def split_colors(index):
+        print(i)
+        print(num_colors)
+        hue = index / num_colors
+        print(hue)
+        (r, g, b) = hsv_to_rgb(hue, 1, 1)
+        return "{2:02x}{1:02x}{0:02x}".format(int(r * 255),
+                                              int(g * 255),
+                                              int(b * 255))
+
+    def add_folder(kml, df_filter, i_color):
         def cell_to_color(value, color, scaling):
             norm_value = scaling(value)
-            return '{0:02x}{1}'.format(int(norm_value * 220), color)
+            return '{0:02x}{1}'.format(int(norm_value * 180), color)
 
         folder_dict = {}
         for x, row in region_dict.items():
@@ -85,27 +96,16 @@ def density_kml(city, supercats, subcats, businesses,
 
         # make a kml of polygons
         folder = kml.newfolder(name=name)
-        color = split_colors(index, num_colors)
+        color = split_colors(i_color)
+        print("{i} von {n}".format(i=i_color, n=num_colors))
+        print(color)
         folder = dict_to_kml(folder, cells.get_borders(), folder_dict,
                              cell_to_color, color, norm_scaling)
         return kml
 
-    def split_colors(index, num_colors):
-        hue = index / num_colors
-        (r, g, b) = hsv_to_rgb(hue, 1, 1)
-        return "{2:02x}{1:02x}{0:02x}".format(int(r * 255),
-                                              int(g * 255),
-                                              int(b * 255))
-
-    num_colors = len(supercats) + len(subcats)
-
-    # import data
-    cells = make_cell_collection(15, businesses)
+    # filter by relevant region
     (region_dict, region_businesses) = region_cells(businesses, cells, city, 5)
 
-    # add cell coordinate to dataframe, group businesses by cells
-    region_businesses['cell_coord'] = region_businesses.apply(
-        lambda row: cells.get_cell(row), axis=1)
     grouped = region_businesses.groupby('cell_coord')
 
     kml = Kml()
@@ -114,13 +114,13 @@ def density_kml(city, supercats, subcats, businesses,
     # iterate through super categories
     for supercat, name in supercats.items():
         in_cat = (region_businesses['super_category'] == supercat)
-        kml = add_folder(kml, in_cat, grouped, region_dict, scaling, i)
+        kml = add_folder(kml, in_cat, i)
         i += 1
 
     # iterate through sub-categories
     for subcat, name in subcats.items():
         in_cat = (region_businesses['category'] == subcat)
-        kml = add_folder(kml, in_cat, grouped, region_dict, scaling, i)
+        kml = add_folder(kml, in_cat, i)
         i += 1
 
     # save kml
@@ -142,8 +142,11 @@ def density_kml(city, supercats, subcats, businesses,
     subcat_names = list(subcats.values())
     for i in range(num_colors):
         if i < len(supercats):
-            legend[supercat_names[i]] = split_colors(i, num_colors)
+            legend[supercat_names[i]] = \
+                "{bgr[4]}{bgr[5]}{bgr[2]}{bgr[3]}{bgr[0]}{bgr[1]}".format(
+                    bgr=split_colors(i))
         else:
-            legend[subcat_names[i - len(supercats)]] = split_colors(
-                i, num_colors)
+            legend[subcat_names[i - len(supercats)]] = \
+                "{bgr[4]}{bgr[5]}{bgr[2]}{bgr[3]}{bgr[0]}{bgr[1]}".format(
+                    bgr=split_colors(i))
     return kml_name, legend

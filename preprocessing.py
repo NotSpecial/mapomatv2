@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-from import_data import import_businesses as get_busi
-from supercats import add_supercats as get_cats
+from mapomat.import_data import import_businesses as get_busi
+from mapomat.supercats import add_supercats as get_cats
+from mapomat.distances import make_cell_collection
 
 import pickle
 
+
+print("importing data ...", end='\r')
 (busi, box, combos) = get_cats(get_busi(
     fields=['categories', 'city', 'latitude', 'longitude', 'business_id']))
 
+print('processing data ...', end='\r')
 # Correct Montreal/Montréal program
 busi.loc[busi['city'] == u'Montréal', 'city'] = u"Montreal"
 
@@ -31,17 +35,26 @@ for superkey in box:
     subbox = box[superkey]['sub_categories']
     categories[superkey] = {key: subbox[key]['name'] for key in subbox}
 
+# sorting into cells
+print('sorting businesses into cells ...', end='\r')
+cells = make_cell_collection(15, busi)
+
+# add cell coord to the businesses df
+busi['cell_coord'] = busi.apply(lambda row: cells.get_cell(row), axis=1)
+
+print('saving data ...', end='\r')
 data = {
     'cities': cities,
     'citylatlon': citylatlon,
     'super_categories': super_categories,
     'categories': categories,
     'df': busi,
-    'combos': combos
+    'combos': combos,
+    'cells': cells
 }
 
-with open("mapomat.dat", 'wb') as f:
-    # force lation1 encoding
+with open("mapomat/mapomat.dat", 'wb') as f:
+    # force latin1 encoding
     p = pickle._Pickler(f)
-    p.encoding = 'lation1'
+    p.encoding = 'latin1'
     p.dump(data)
