@@ -58,3 +58,7 @@ target/
 
 # ignore preprocessing data (needs to ge created locally and fresh)
 *.dat
+
+# ignore caching and processing data
+kml_files/
+pickles/
