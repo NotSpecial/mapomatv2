@@ -19,7 +19,9 @@ if not path.exists("kml_files"):
     makedirs("kml_files")
 
 with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
-    data = pickle.load(f)
+    u = pickle._Unpickler(f)
+    u.encoding = 'latin1'
+    data = u.load()
 
 app.config.update(data)
 

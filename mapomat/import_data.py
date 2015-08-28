@@ -1,11 +1,10 @@
 import pandas as pd
 import json
 from os import path
-from cache import cache_result
 import datetime as dt
 
 _ROOT = path.abspath(path.dirname(__file__))
-DATA_PATH = _ROOT
+DATA_PATH = path.join(_ROOT, 'data')
 PICKLE_PATH = path.join(_ROOT, 'pickles')
 
 BUSINESSES_PATH = path.join(DATA_PATH, 'yelp_academic_dataset_business.json')
@@ -28,7 +27,6 @@ def _get_frame(file_path, fields=None):
     return pd.DataFrame(data)
 
 
-@cache_result('pickles')
 def import_reviews(status=None, fields=None):
     dataframe = _get_frame(REVIEWS_PATH, fields)
     if fields is None or 'real_date' in fields:
@@ -45,7 +43,6 @@ def _one_year(date_series):
     return (date_series > threshold).sum()
 
 
-@cache_result('pickles')
 def import_businesses(status=None, fields=None):
     dataframe = _get_frame(BUSINESSES_PATH, fields)
 
@@ -85,28 +82,4 @@ def import_businesses(status=None, fields=None):
     if status:
         print('Successfully imported businesses with columns {}'.format(
               dataframe.columns.values))
-    return dataframe
-
-
-def import_checkins(status=None, fields=None):
-    dataframe = _get_frame(CHECKINS_PATH, fields)
-    if status:
-        print('Successfully imported checkins with columns {}'.format(
-              dataframe.columns.values))
-    return dataframe
-
-
-def import_tips(status=None, fields=None):
-    dataframe = _get_frame(TIPS_PATH, fields)
-    if status:
-        print('Successfully imported tips with columns {}'.format(
-            dataframe.columns.values))
-    return dataframe
-
-
-def import_users(status=None, fields=None):
-    dataframe = _get_frame(USERS_PATH, fields)
-    if status:
-        print('Successfully imported users with columns {}'.format(
-            dataframe.columns.values))
     return dataframe

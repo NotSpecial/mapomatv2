@@ -25,23 +25,23 @@ def _get_name(base_path, function, *args, **kwargs):
     for arg in args:
         # Special treatment for dfs because they are huge
         if type(arg) == pd.DataFrame:
-            pickle_hash.update(_hash_frame(arg))
+            pickle_hash.update(_hash_frame(arg).encode('utf-8'))
         else:
-            pickle_hash.update(str(arg))
+            pickle_hash.update(str(arg).encode('utf-8'))
 
     # Function specific
-    pickle_hash.update(function.__name__)
-    pickle_hash.update(getsource(function))
+    pickle_hash.update(function.__name__.encode('utf-8'))
+    pickle_hash.update(getsource(function).encode('utf-8'))
 
     # kwargs
     for key in sorted(kwargs.keys()):
-        pickle_hash.update(str(key))
+        pickle_hash.update(str(key).encode('utf-8'))
         arg = kwargs[key]
         # Special treatment for dfs because they are huge
         if type(kwargs[key]) == pd.DataFrame:
-            pickle_hash.update(_hash_frame(arg))
+            pickle_hash.update(_hash_frame(arg).encode('utf-8'))
         else:
-            pickle_hash.update(str(arg))
+            pickle_hash.update(str(arg).encode('utf-8'))
 
     return path.join(base_path, pickle_hash.hexdigest() + '.pkl')
 

@@ -41,4 +41,7 @@ data = {
 }
 
 with open("mapomat.dat", 'wb') as f:
-    pickle.dump(data, f)
+    # force lation1 encoding
+    p = pickle._Pickler(f)
+    p.encoding = 'lation1'
+    p.dump(data)
