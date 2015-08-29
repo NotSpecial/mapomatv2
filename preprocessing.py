@@ -6,11 +6,11 @@ from mapomat.distances import make_cell_collection
 import pickle
 
 
-print("importing data ...", end='\r')
+print("importing data ...")
 (busi, box, combos) = get_cats(get_busi(
     fields=['categories', 'city', 'latitude', 'longitude', 'business_id']))
 
-print('processing data ...', end='\r')
+print('processing data ...')
 # Correct Montreal/Montréal program
 busi.loc[busi['city'] == u'Montréal', 'city'] = u"Montreal"
 
@@ -36,13 +36,13 @@ for superkey in box:
     categories[superkey] = {key: subbox[key]['name'] for key in subbox}
 
 # sorting into cells
-print('sorting businesses into cells ...', end='\r')
+print('sorting businesses into cells ...')
 cells = make_cell_collection(15, busi)
 
 # add cell coord to the businesses df
 busi['cell_coord'] = busi.apply(lambda row: cells.get_cell(row), axis=1)
 
-print('saving data ...', end='\r')
+print('saving data ...')
 data = {
     'cities': cities,
     'citylatlon': citylatlon,
@@ -55,6 +55,6 @@ data = {
 
 with open("mapomat/mapomat.dat", 'wb') as f:
     # force latin1 encoding
-    p = pickle._Pickler(f)
-    p.encoding = 'latin1'
-    p.dump(data)
+    # p = pickle._Pickler(f)
+    # p.encoding = 'latin1'
+    pickle.dump(data, f)

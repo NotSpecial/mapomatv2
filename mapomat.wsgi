@@ -1,5 +1,6 @@
-from mapomat import bootstrap
+from mapomat.bootstrap import create_app
+
+application = create_app()
 
 if __name__ == "__main__":
-    app = bootstrap.create_app()
-    app.run(debug=True)    
+    application.run(debug=True)
