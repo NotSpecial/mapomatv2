@@ -11,14 +11,20 @@
             -webkit-border-radius: 8px;
                -moz-border-radius: 8px;
                     border-radius: 8px;
-            margin-bottom: 20px;
+        }
+        #logo {
+            width: 100%;
+            margin: 20px 20px auto auto;
         }
     </style>
 </head>
 <body>
     <form class="container" style="position: centered">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-2">
+            <img src="{{ logo_url}}" id="logo" />
+            </div>
+            <div class="col-md-10">
                 <h1>Map-o-Mat</h1>
                 <hr />
                 Welcome to Map-o-Mat! This application uses the data published
@@ -35,6 +41,8 @@
                 click "generate". After a little computing this will take you
                 to a live map preview.<br />
                 (You can also download the overlay as .kml)
+            </div>
+            <div class="col-md-12">
                 <hr />
                 Select city:
                 <select name="city">
@@ -50,7 +58,7 @@
         {% for superkey in supercats %}
         <div class="col-md-3">
             <div class="panel panel-default">
-            <div class="panel-heading">{{ supercats[superkey] }}: </div>
+            <div class="panel-heading">{{ supercats[superkey] }} </div>
             <div class="panel-body">
                 <input type="checkbox" name="supercat" value="{{ superkey }}">
                     All businesses
@@ -72,7 +80,14 @@
                 type="submit"
                 formmethod="post">Generate</button>
 
+        <hr />
+        <small>Logo made with icons by
+        <a href="http://www.flaticon.com/authors/freepik" title="Freepik">
+        Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">
+        www.flaticon.com</a>, licensed by
+        <a href="http://creativecommons.org/licenses/by/3.0/"
+        title="Creative Commons BY 3.0">CC BY 3.0</a></small>
     </form>
-    {# a comment #}
+
 </body>
 </html>

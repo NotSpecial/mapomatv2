@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, url_for
 from werkzeug import secure_filename
 
 from ast import literal_eval
@@ -30,10 +30,12 @@ def create_app():
 
     @app.route("/", methods=['GET'])
     def hello():
-        return render_template('hello.html',
-                               cities=app.config['cities'],
-                               supercats=app.config['super_categories'],
-                               subcats=app.config['categories'])
+        return render_template(
+            'hello.html',
+            cities=app.config['cities'],
+            supercats=app.config['super_categories'],
+            subcats=app.config['categories'],
+            logo_url=url_for('static', filename='mapomat_logo.svg'))
 
     @app.route("/", methods=['POST'])
     def result():

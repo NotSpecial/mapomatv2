@@ -14,6 +14,14 @@ print('processing data ...')
 # Correct Montreal/Montréal program
 busi.loc[busi['city'] == u'Montréal', 'city'] = u"Montreal"
 
+# Filter out uncategorized
+idx_sup_good = (busi['super_category'] != -1)
+idx_sub_good = (busi['sub_category'] != -1)
+
+idx_good = idx_sub_good & idx_sup_good
+
+busi = busi[idx_good].copy(deep=True)
+
 # Get cities with over 1000 businesses
 idx = (busi.groupby('city')['categories'].count()
        .order(ascending=False) > 1000)
@@ -28,12 +36,15 @@ citylatlon = {
     } for city in cities
 }
 
-super_categories = {key: box[key]['name'] for key in box}
+super_categories = {key: box[key]['name'] for key in box if (key != -1)}
 
 categories = {}
 for superkey in box:
+    if (superkey == -1):
+        continue
     subbox = box[superkey]['sub_categories']
-    categories[superkey] = {key: subbox[key]['name'] for key in subbox}
+    categories[superkey] = (
+        {key: subbox[key]['name'] for key in subbox if (key != -1)})
 
 # sorting into cells
 print('sorting businesses into cells ...')
