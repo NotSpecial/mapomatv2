@@ -24,6 +24,8 @@ def create_app(debug=True):
         u.encoding = 'latin1'
         data = u.load()
 
+    print(data.keys())
+
     app.config.update(data)
 
     app.config['KML_URL'] = app.config['BASE_URL'] + "kml/"
@@ -41,21 +43,14 @@ def create_app(debug=True):
         sup = [int(item) for item in request.form.getlist('supercat')]
         sub = [literal_eval(item) for item in request.form.getlist('subcat')]
 
-        supercats = {
-            key: app.config['super_categories'][key] for key in sup
-        }
+        dicts = [app.config['grids'][city].get(key, None)
+                 for key in (sub + sup)]
 
-        subcats = {
-            key: app.config['combos'][key] for key in sub
-        }
-
-        if (len(sup) > 0) or (len(sub) > 0):
+        if len(dicts) > 0:
             name, legend = density_kml(
                 city,
-                supercats,
-                subcats,
-                app.config['df'],
-                app.config['cells']
+                dicts,
+                app.config['borders']
             )
 
             url = app.config['KML_URL'] + name
