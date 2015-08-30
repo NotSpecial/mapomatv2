@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, url_for
 from werkzeug import secure_filename
 
 from ast import literal_eval
@@ -9,7 +9,7 @@ import pickle
 from .kml_creation import density_kml
 
 
-def create_app(debug=True):
+def create_app():
     _ROOT = path.abspath(path.dirname(__file__))
     temp_fold = path.join(_ROOT, "templates")
     app = Flask(__name__, template_folder=temp_fold)
@@ -20,9 +20,9 @@ def create_app(debug=True):
         makedirs("kml_files")
 
     with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
-        u = pickle._Unpickler(f)
-        u.encoding = 'latin1'
-        data = u.load()
+        # u = pickle._Unpickler(f)
+        # u.encoding = 'latin1'
+        data = pickle.load(f)
 
     print(data.keys())
 
@@ -32,10 +32,12 @@ def create_app(debug=True):
 
     @app.route("/", methods=['GET'])
     def hello():
-        return render_template('hello.html',
-                               cities=app.config['cities'],
-                               supercats=app.config['super_categories'],
-                               subcats=app.config['categories'])
+        return render_template(
+            'hello.html',
+            cities=app.config['cities'],
+            supercats=app.config['super_categories'],
+            subcats=app.config['categories'],
+            logo_url=url_for('static', filename='mapomat_logo.svg'))
 
     @app.route("/", methods=['POST'])
     def result():

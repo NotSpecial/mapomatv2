@@ -7,13 +7,21 @@ from mapomat.kml_creation import make_dict
 import pickle
 
 
-print("importing data ...", end='\r')
+print("importing data ...")
 (busi, box, combos) = get_cats(get_busi(
     fields=['categories', 'city', 'latitude', 'longitude', 'business_id']))
 
-print('processing data ...', end='\r')
+print('processing data ...')
 # Correct Montreal/Montréal program
 busi.loc[busi['city'] == u'Montréal', 'city'] = u"Montreal"
+
+# Filter out uncategorized
+idx_sup_good = (busi['super_category'] != -1)
+idx_sub_good = (busi['sub_category'] != -1)
+
+idx_good = idx_sub_good & idx_sup_good
+
+busi = busi[idx_good].copy(deep=True)
 
 # Get cities with over 1000 businesses
 idx = (busi.groupby('city')['categories'].count()
@@ -29,24 +37,27 @@ citylatlon = {
     } for city in cities
 }
 
-super_categories = {key: box[key]['name'] for key in box}
+super_categories = {key: box[key]['name'] for key in box if (key != -1)}
 
 categories = {}
 for superkey in box:
+    if (superkey == -1):
+        continue
     subbox = box[superkey]['sub_categories']
-    categories[superkey] = {key: subbox[key]['name'] for key in subbox}
+    categories[superkey] = (
+        {key: subbox[key]['name'] for key in subbox if (key != -1)})
 
 # sorting into cells
-print('sorting businesses into cells ...', end='\r')
+print('sorting businesses into cells ...')
 cells = make_cell_collection(15, busi)
 
 # add cell coord to the businesses df
 busi['cell_coord'] = busi.apply(lambda row: cells.get_cell(row), axis=1)
 
-print('creating city analysises ...', end='\r')
+print('creating city analysises ...')
 city_grids = {}
 for city in cities:
-    print('processing ' + city + ' ...', end='\r')
+    print('processing ' + city + ' ...')
     city_grids[city] = {}
     # first supercats
     for superkey in box:
@@ -64,7 +75,7 @@ for city in cities:
                 data['name'] = combos[combo]
                 city_grids[city][combo] = data
 
-print('saving data ...', end='\r')
+print('saving data ...')
 data = {
     'cities': cities,
     'citylatlon': citylatlon,
@@ -78,6 +89,6 @@ data = {
 
 with open("mapomat/mapomat.dat", 'wb') as f:
     # force latin1 encoding
-    p = pickle._Pickler(f)
-    p.encoding = 'latin1'
-    p.dump(data)
+    # p = pickle._Pickler(f)
+    # p.encoding = 'latin1'
+    pickle.dump(data, f)
