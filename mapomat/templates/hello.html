@@ -4,56 +4,41 @@
     <title>Map-o-Mat</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        .btn-xlarge {
-            width:100%;
-            line-height: normal;
-            -webkit-border-radius: 8px;
-               -moz-border-radius: 8px;
-                    border-radius: 8px;
-        }
-        #logo {
-            width: 100%;
-            margin: 20px 20px auto auto;
-        }
-    </style>
 </head>
 <body>
-    <form class="container" style="position: centered">
+    <div class="container" style="max-width: 970px">
+        <img src="{{ title_url}}" class="img-responsive center-block"
+        style="margin-top: 30px; margin-bottom: 30px" />
+        <p>
+            Welcome to Map-o-Mat! This application uses the data published
+            in the <a href="http://www.yelp.com/dataset_challenge">yelp
+            dataset challenge</a> to automatically order businesses into
+            categories (nothing you see here was picked by hand!) and
+            display them on maps from
+            <a href="https://www.arcgis.com/features/">ArcGIS</a>.<br />
+            We are Hermann Blum and Alexander Dietmüller and developed this
+            application as part of a group project for the
+            <a href="http://disco.ethz.ch">disco group at ETH Zurich</a>.
+            <br />
+            To start, pick a city and all categories you want to see and
+            click "generate". After a little computing this will take you
+            to a live map preview.<br />
+            (You can also download the overlay as .kml)
+        </p>
+    </div>
+    <form class="container">
         <div class="row">
-            <div class="col-md-2">
-            <img src="{{ logo_url}}" id="logo" />
-            </div>
-            <div class="col-md-10">
-                <h1>Map-o-Mat</h1>
-                <hr />
-                Welcome to Map-o-Mat! This application uses the data published
-                in the <a href="http://www.yelp.com/dataset_challenge">yelp
-                dataset challenge</a> to automatically order businesses into
-                categories (nothing you see here was picked by hand!) and
-                display them on maps from
-                <a href="https://www.arcgis.com/features/">ArcGIS</a>.<br />
-                We are Hermann Blum and Alexander Dietmüller and designed this
-                application as part of a group project for the
-                <a href="http://disco.ethz.ch">disco group at ETH Zurich</a>.
-                <br />
-                To start, pick a city and all categories you want to see and
-                click "generate". After a little computing this will take you
-                to a live map preview.<br />
-                (You can also download the overlay as .kml)
-            </div>
-            <div class="col-md-12">
-                <hr />
+            <hr />
+            <div class="col-md-4">
                 Select city:
-                <select name="city">
+                <select name="city" class="form-control">
                 {% for city in cities %}
                     <option value="{{ city }}">{{ city }}</option>
                 {% endfor %}
                 </select>
-                <br /><br />
-                </div>
             </div>
         </div>
+        <br /><br />
         <div class="row">
         {% for superkey in supercats %}
         <div class="col-md-3">
@@ -76,18 +61,20 @@
 
         </div>
 
-        <button class="btn btn-primary btn-xlarge"
+        <button class="btn btn-primary btn-lg btn-block"
                 type="submit"
                 formmethod="post">Generate</button>
 
-        <hr />
+    </form>
+    <div class="container-fluid"
+    style="background-color: #f5f5f5; text-align: center; margin-top: 20px;
+    padding: 10px">
         <small>Logo made with icons by
         <a href="http://www.flaticon.com/authors/freepik" title="Freepik">
         Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">
         www.flaticon.com</a>, licensed by
         <a href="http://creativecommons.org/licenses/by/3.0/"
         title="Creative Commons BY 3.0">CC BY 3.0</a></small>
-    </form>
-
+    </div>
 </body>
 </html>

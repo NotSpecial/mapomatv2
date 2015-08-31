@@ -37,7 +37,7 @@ def create_app():
             cities=app.config['cities'],
             supercats=app.config['super_categories'],
             subcats=app.config['categories'],
-            logo_url=url_for('static', filename='mapomat_logo.svg'))
+            title_url=url_for('static', filename='mapomat_title.svg'))
 
     @app.route("/", methods=['POST'])
     def result():
