@@ -1,5 +1,6 @@
-from .cache import cache_result
+from __future__ import division
 from os import path
+from .cache import cache_result
 from werkzeug import secure_filename
 from colorsys import hsv_to_rgb
 import numpy as np
@@ -11,7 +12,7 @@ def region(businesses, cells, city, radius):
     region_indices = [item['index'] for item in
                       cells.get_region(random_choice, radius)]
     return list(set(
-        businesses.loc[region_indices]['city'].tolist()))
+        businesses.loc[region_indices, 'city'].tolist()))
 
 
 @cache_result('pickles')
@@ -122,7 +123,6 @@ def density_kml(city, dicts, borders, folder='kml_files',
         return kml
 
     kml = Kml()
-    print(dicts)
 
     i = 0  # indexer for different colors
     for data in dicts:
