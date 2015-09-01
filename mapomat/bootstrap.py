@@ -24,8 +24,6 @@ def create_app():
         # u.encoding = 'latin1'
         data = pickle.load(f)
 
-    print(data.keys())
-
     app.config.update(data)
 
     app.config['KML_URL'] = app.config['BASE_URL'] + "kml/"
@@ -52,7 +50,8 @@ def create_app():
             name, legend = density_kml(
                 city,
                 dicts,
-                app.config['borders']
+                app.config['borders'],
+                scaling=lambda x: x ** (0.6)
             )
 
             url = app.config['KML_URL'] + name
