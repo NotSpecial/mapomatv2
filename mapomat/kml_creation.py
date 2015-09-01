@@ -11,7 +11,7 @@ def region(businesses, cells, city, radius):
     region_indices = [item['index'] for item in
                       cells.get_region(random_choice, radius)]
     return list(set(
-        businesses.iloc[region_indices]['city'].tolist()))
+        businesses.loc[region_indices]['city'].tolist()))
 
 
 @cache_result('pickles')
