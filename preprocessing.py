@@ -118,6 +118,8 @@ for superkey in box:
     categories[superkey] = (
         {key: subbox[key]['name'] for key in subbox if key != -1})
 
+# Create city dict. Make sure to cast all keys form numpy.int to int
+# json lib has problems with numpy int and doesnt parse sometimes
 city_categories = {city: {} for city in cities}
 for city in cities:
     # Iterate twice: Once to find integers fo
@@ -125,13 +127,13 @@ for city in cities:
         if type(key) == tuple:
             continue
         # Create super categories
-        city_categories[city][key] = []
+        city_categories[city][int(key)] = []
 
     for key in city_grids[city]:  # categories for city
         if type(key) != tuple:
             continue
         # Create super categories
-        city_categories[city][key[0]].append(key[1])
+        city_categories[city][int(key[0])].append(int(key[1]))
 
 
 print('saving data ...')
