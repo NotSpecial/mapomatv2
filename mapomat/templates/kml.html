@@ -49,7 +49,7 @@
 
     parser.parse();
 
-    var kmlUrl = "{{ kml_url }}";
+    var kmlUrl = "{{ url_for('deliver', filename=kml) }}";
     var kml = new KMLLayer(kmlUrl);
     map.addLayer(kml);
   });

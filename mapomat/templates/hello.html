@@ -27,13 +27,9 @@
         window.subCatNames = {{ categories|tojson }}
     </script>
     <script src="{{ url_for('static', filename='mapomat.js') }}"></script>
-
-    <!-- padding for footer -->
-    <style>
-        body { padding-bottom: 70px; }
-    </style>
 </head>
 <body>
+    <div id="wrap">
     <div class="container"
     style="max-width: 970px; margin-bottom: 30px">
         <img src="{{ url_for('static', filename='mapomat_title.svg') }}"
@@ -100,12 +96,17 @@
             <button class="btn btn-primary btn-lg btn-block"
                     type="submit"
                     ng-show="sCtrl.select"
+                    style="margin-bottom: 20px"
                     formmethod="post">Generate</button>
 
         </form>
     </div>
-    <div class="navbar navbar-default navbar-fixed-bottom"
-    style="text-align: center">
+    </div>
+    <!--
+    <div class="navbar navbar-default" id="footer"
+    ng-controller="FooterController as fCtrl"
+    ng-style="fCrl.footermargin"
+    style="text-align: center; margin-bottom: 0px">
         <div class="container">
         <p class="navbar-text">Map-o-Mat by Hermann Blum and Alexander
         Dietmüller. Logo made with icons by
@@ -119,5 +120,6 @@
         </p>
         </div>
     </div>
+    -->
 </body>
 </html>
