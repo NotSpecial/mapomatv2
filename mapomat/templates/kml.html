@@ -71,8 +71,11 @@
         <span style="color: #{{ legend[item] }}">{{ item }}<br />
         {% endfor %}
         <br />
-        <a class="btn btn-default" href="{{ base_url }}">Start again</a>
-        <a class="btn btn-default" href="{{ kml_url }}">Download KML</a>
+        <a class="btn btn-default" href="{{ url_for('hello') }}">
+          Start again</a>
+        <a class="btn btn-default"
+        href="{{ url_for('deliver', filename=kml) }}">
+          Download KML</a>
       </div>
     <div>
   </div>
