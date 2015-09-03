@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, send_file, url_for
+from flask import Flask, render_template, request, send_file
 from werkzeug import secure_filename
 
 from ast import literal_eval
@@ -13,7 +13,6 @@ def create_app():
     _ROOT = path.abspath(path.dirname(__file__))
     temp_fold = path.join(_ROOT, "templates")
     app = Flask(__name__, template_folder=temp_fold)
-    app.config.from_object('mapomat.config')
 
     # Make dir
     if not path.exists("kml_files"):
@@ -26,16 +25,14 @@ def create_app():
 
     app.config.update(data)
 
-    app.config['KML_URL'] = app.config['BASE_URL'] + "kml/"
-
     @app.route("/", methods=['GET'])
     def hello():
         return render_template(
             'hello.html',
-            cities=app.config['cities'],
-            supercats=app.config['super_categories'],
-            subcats=app.config['categories'],
-            title_url=url_for('static', filename='mapomat_title.svg'))
+            city_categories=app.config['city_categories'],
+            super_categories=app.config['super_categories'],
+            categories=app.config['categories'],
+        )
 
     @app.route("/", methods=['POST'])
     def result():
@@ -54,16 +51,14 @@ def create_app():
                 scaling=lambda x: x ** (0.6)
             )
 
-            url = app.config['KML_URL'] + name
         else:
-            url = ""
+            name = ""
             legend = {"Nothing selected": "ffffff"}
 
         return render_template('kml.html',
                                lat=app.config['citylatlon'][city]['lat'],
                                lon=app.config['citylatlon'][city]['lon'],
-                               base_url=app.config['BASE_URL'],
-                               kml_url=url,
+                               kml=name,
                                city=city,
                                legend=legend)
 
