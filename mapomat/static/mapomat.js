@@ -5,6 +5,10 @@ mapomat.controller('SelectController', function SelectController($window) {
         this.superNames = $window.superCatNames
         this.subNames = $window.subCatNames
     });
+
+mapomat.controller('LegendController', function LegendController() {
+        this.show = true
+    });
 /*
 mapomat.controller('FooterController', function FooterController($window) {
 
