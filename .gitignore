@@ -55,5 +55,6 @@ docs/_build/
 
 # ignore caching and processing data
 kml_files/
+mapomat/data/
 pickles/
 target/
