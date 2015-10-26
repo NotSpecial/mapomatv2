@@ -28,12 +28,16 @@
 </head>
 <body>
     <div id="wrap">
+    <div style="
+    background-image: url('{{ url_for('static', filename='title_back.png')}}')"
+    >
     <div class="container"
     style="max-width: 970px; margin-bottom: 30px">
         <img src="{{ url_for('static', filename='mapomat_title.svg') }}"
         class="img-responsive center-block"
         style="margin-top: 30px; margin-bottom: 30px" />
-        <p>
+        <p style="background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0px 0px 30px 5px rgba(255,255,255,1);">
             Welcome to Map-o-Mat! This application uses the data published
             in the <a href="http://www.yelp.com/dataset_challenge">yelp
             dataset challenge</a> to automatically order businesses into
@@ -49,6 +53,7 @@
             to a live map preview.<br />
             (You can also download the overlay as .kml)
         </p>
+    </div>
     </div>
     <div class="container">
         <form action="{{ url_for('hello') }}"
@@ -67,34 +72,31 @@
             <br /><br />
             <div class="row">
                 <div
-                ng-repeat="(super, sublist) in sCtrl.cityCats[sCtrl.select]"
-                class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            {{ sCtrl.superNames[super] }}
-                        </div>
-                        <div class="panel-body">
+                ng-repeat="(super, sublist) in sCtrl.cityCats[sCtrl.select]">
+                    <div ng-if="$index % 4 == 0" class="clearfix"></div>
+                    <div class="col-md-3" style="margin-bottom: 1.5em">
+                        <h4> {{ sCtrl.superNames[super] }} </h2>
+                        <hr style="margin-top: 0.5em; margin-bottom: 0.5em;
+                        background-color: rgb(51, 122, 183);
+                        height: 1px;
+                        color: rgb(51, 122, 183); border: none">
 
-                            <input type="checkbox" name="supercat"
-                            value="{{ super }}">
-                                All businesses
+                        <input type="checkbox" name="supercat"
+                        value="{{ super }}"> All businesses</input>
+                        <div ng-repeat="sub in sublist">
+                            <input type="checkbox" name="subcat"
+                            value="({{super}}, {{sub}})">
+                            {{ sCtrl.subNames[super][sub] }}
                             </input>
-                            <div ng-repeat="sub in sublist">
-                                <input type="checkbox" name="subcat"
-                                value="({{super}}, {{sub}})">
-                                {{ sCtrl.subNames[super][sub] }}
-                                </input>
-                            </div>
                         </div>
                     </div>
-                </div>
             </div>
             {% endraw %}
 
             <button class="btn btn-primary btn-lg btn-block"
                     type="submit"
                     ng-show="sCtrl.select"
-                    style="margin-bottom: 20px"
+                    style="margin-top: 1.2em; margin-bottom: 1.2em"
                     formmethod="post">Generate</button>
 
         </form>
