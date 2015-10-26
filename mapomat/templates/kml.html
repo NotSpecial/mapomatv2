@@ -16,14 +16,17 @@
 <style>
   html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
   #map { height: 100%; margin: 0; padding: 0; }
-  .meta {
+  .positionbox {
+    z-index: 40;
     position: absolute;
     left: 20px;
     bottom: 20px;
-    z-index: 40;
+    margin-right: 20px;
+  }
+  .meta {
     max-width: 100%;
     margin-bottom: 0px;
-  }
+    }
   .meta h3 {
     color: #fff;
     margin: 0;
@@ -67,6 +70,7 @@
   <div id="map"
        data-dojo-type="dijit/layout/ContentPane"
        data-dojo-props="region:'center'">
+    <div class="positionbox">
     <div class="panel panel-default meta" ng-show="lCtrl.show">
       <div class="panel-body" style="background: #666">
         <h3>Results for {{ city }}</h3>
@@ -85,6 +89,7 @@
           <span class="glyphicon glyphicon-resize-small"></span>
         </button>
       </div>
+    </div>
     </div>
     <div class="meta" ng-hide="lCtrl.show">
       <button type="button" class="btn btn-default pull-right"
