@@ -70,7 +70,7 @@
     <div class="panel panel-default meta" ng-show="lCtrl.show">
       <div class="panel-body" style="background: #666">
         <h3>Results for {{ city }}</h3>
-        <br /><br />
+        <br />
         {% for item in legend %}
         <span style="color: #{{ legend[item] }}">{{ item }}<br />
         {% endfor %}
@@ -79,7 +79,7 @@
           Start again</a>
         <a class="btn btn-default"
         href="{{ url_for('deliver', filename=kml) }}">
-          Download KML</a>
+          Download KML</a>&nbsp;
         <button type="button" class="btn btn-default pull-right"
         ng-click="lCtrl.show = false">
           <span class="glyphicon glyphicon-resize-small"></span>
