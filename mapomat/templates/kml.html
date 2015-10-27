@@ -2,18 +2,18 @@
 
 <html ng-app="mapomat">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-<title>Map-o-Mat results for {{ city }}</title>
-<!-- angular -->
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-<script src="{{ url_for('static', filename='mapomat.js') }}?2"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Map-o-Mat results for {{ city }}</title>
+  <!-- angular -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+  <script src="{{ url_for('static', filename='mapomat.js') }}?2"></script>
 
-<link rel="stylesheet" href="http://js.arcgis.com/3.14/dijit/themes/tundra/tundra.css">
-<link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.14/dijit/themes/tundra/tundra.css">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-<style>
+  <style>
   html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
   #map { height: 100%; margin: 0; padding: 0; }
   .positionbox {
@@ -24,9 +24,10 @@
     margin-right: 20px;
   }
   .meta {
+    border: 0px;
     max-width: 100%;
     margin-bottom: 0px;
-    }
+  }
   .meta h3 {
     color: #fff;
     margin: 0;
@@ -34,70 +35,70 @@
   #loading {
     float: right;
   }
-</style>
+  </style>
 
-<script src="http://js.arcgis.com/3.14/"></script>
-<script>
+  <script src="http://js.arcgis.com/3.14/"></script>
+  <script>
   var map;
   require([
     "esri/map", "esri/layers/KMLLayer",
     "dojo/parser", "dojo/dom-style",
 
     "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dojo/domReady!"
-  ], function(
-    Map, KMLLayer,
-    parser, domStyle
-  ) {
-    map = new Map("map", {
-      basemap: "topo",
-      center: [{{ lon }}, {{ lat }}],
-      zoom: 12
+    ], function(
+      Map, KMLLayer,
+      parser, domStyle
+      ) {
+      map = new Map("map", {
+        basemap: "topo",
+        center: [{{ lon }}, {{ lat }}],
+        zoom: 12
+      });
+
+      parser.parse();
+
+      var kmlUrl = "{{ url_for('deliver', filename=kml, _external=True) }}";
+      var kml = new KMLLayer(kmlUrl);
+      map.addLayer(kml);
     });
-
-    parser.parse();
-
-    var kmlUrl = "{{ url_for('deliver', filename=kml, _external=True) }}";
-    var kml = new KMLLayer(kmlUrl);
-    map.addLayer(kml);
-  });
-</script>
+  </script>
 </head>
 
 <body class="tundra" ng-controller="LegendController as lCtrl">
-<div data-dojo-type="dijit/layout/BorderContainer"
-     data-dojo-props="design:'headline',gutters:false"
-     style="width: 100%; height: 100%; margin: 0;">
+  <div data-dojo-type="dijit/layout/BorderContainer"
+  data-dojo-props="design:'headline',gutters:false"
+  style="width: 100%; height: 100%; margin: 0;">
   <div id="map"
-       data-dojo-type="dijit/layout/ContentPane"
-       data-dojo-props="region:'center'">
-    <div class="positionbox">
+  data-dojo-type="dijit/layout/ContentPane"
+  data-dojo-props="region:'center'">
+  <div class="positionbox">
     <div class="panel panel-default meta" ng-show="lCtrl.show">
       <div class="panel-body" style="background: #666">
         <h3>Results for {{ city }}</h3>
         <br />
         {% for item in legend %}
         <span style="color: #{{ legend[item] }}">{{ item }}<br />
-        {% endfor %}
-        <br />
-        <a class="btn btn-default" href="{{ url_for('hello') }}">
-          Start again</a>
-        <a class="btn btn-default"
-        href="{{ url_for('deliver', filename=kml) }}">
-          Download KML</a>&nbsp;
-        <button type="button" class="btn btn-default pull-right"
-        ng-click="lCtrl.show = false">
-          <span class="glyphicon glyphicon-resize-small"></span>
-        </button>
+          {% endfor %}
+          <br />
+          <a class="btn btn-default" href="{{ url_for('hello') }}">
+            Start again</a>
+            <a class="btn btn-default"
+            href="{{ url_for('deliver', filename=kml) }}">
+            Download KML</a>&nbsp;
+            <button type="button" class="btn btn-default pull-right"
+            ng-click="lCtrl.show = false">
+            <span class="glyphicon glyphicon-resize-small"></span>
+          </button>
+        </div>
       </div>
-    </div>
-    </div>
-    <div class="meta" ng-hide="lCtrl.show">
-      <button type="button" class="btn btn-default pull-right"
+      <div class="meta" ng-hide="lCtrl.show">
+        <button type="button" class="btn btn-default pull-right"
         ng-click="lCtrl.show = true">
-          <span class="glyphicon glyphicon-resize-full"></span>
+        <span class="glyphicon glyphicon-resize-full"></span>
       </button>
     </div>
   </div>
+</div>
 </div>
 </body>
 </html>
