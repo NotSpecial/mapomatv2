@@ -92,10 +92,14 @@ def make_dict(city, category, businesses, cells, supercat=True):
     return {'dict': cat_dict, 'max': maximum}
 
 
-def density_kml(city, dicts, borders, folder='kml_files',
+def density_kml(city, dicts, borders, colors, folder='kml_files',
                 scaling=(lambda x: x)):
 
     num_colors = len(dicts)
+
+    def rgb_to_bgr(color):
+        return "{rgb[4]}{rgb[5]}{rgb[2]}{rgb[3]}{rgb[0]}{rgb[1]}".format(
+            rgb=color)
 
     def split_colors(index):
         hue = index / num_colors
@@ -117,7 +121,7 @@ def density_kml(city, dicts, borders, folder='kml_files',
 
         # make a kml of polygons
         folder = kml.newfolder(name=data['name'])
-        color = split_colors(index)
+        color = rgb_to_bgr(data['color'])
         folder = dict_to_kml(folder, borders, folder_dict, cell_to_color,
                              color, norm_scaling)
         return kml
@@ -139,13 +143,4 @@ def density_kml(city, dicts, borders, folder='kml_files',
     kml_path = path.join(folder, kml_name)
     kml.save(kml_path)
 
-    # make legend
-    legend = {}
-    i = 0
-    for data in dicts:
-        legend[data['name']] = \
-            "{bgr[4]}{bgr[5]}{bgr[2]}{bgr[3]}{bgr[0]}{bgr[1]}".format(
-                bgr=split_colors(i))
-        i += 1
-
-    return kml_name, legend
+    return kml_name

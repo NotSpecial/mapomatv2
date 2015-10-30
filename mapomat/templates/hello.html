@@ -15,6 +15,7 @@
 
     <!-- bootstrap and angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+    <script src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
     <!-- own scripts -->
@@ -52,13 +53,13 @@
     </div>
     <div class="container">
         <form action="{{ url_for('hello') }}"
-        ng-controller="SelectController as sCtrl">
+        ng-controller="SelectController">
             {% raw %}
             <div class="row">
                 <div class="col-md-4 col-md-offset-4">
                     <select name="city" class="form-control"
-                    ng-model="sCtrl.select">
-                        <option ng-repeat="(city, dict) in sCtrl.cityCats"
+                    ng-model="selectedCity">
+                        <option ng-repeat="(city, dict) in cityCats"
                         value="{{ city }}">{{ city }}</option>
                         <option value="">-- select a city to start --</option>
                     </select>
@@ -67,33 +68,45 @@
             <br /><br />
             <div class="row">
                 <div
-                ng-repeat="(super, sublist) in sCtrl.cityCats[sCtrl.select]"
+                ng-repeat="(super, sublist) in cityCats[selectedCity]"
                 class="col-md-3">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            {{ sCtrl.superNames[super] }}
+                            {{ superNames[super] }}
                         </div>
                         <div class="panel-body">
 
                             <input type="checkbox" name="supercat"
-                            value="{{ super }}">
-                                All businesses
+                            value="{{ super }}"
+                            ng-model="selection[superNames[super]]"
+                            ng-click="updateColors()">
+                                all businesses
                             </input>
                             <div ng-repeat="sub in sublist">
                                 <input type="checkbox" name="subcat"
-                                value="({{super}}, {{sub}})">
-                                {{ sCtrl.subNames[super][sub] }}
+                                value="({{super}}, {{sub}})"
+                                ng-model="selection[subNames[super][sub]]"
+                                ng-click="updateColors()">
+                                {{ subNames[super][sub] }}
                                 </input>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <br \><br \>
+            <div class="row">
+                <div
+                ng-repeat="color in colors">
+                    <li>{{color.name}}</li>
+                </div>
+
+            </div>
             {% endraw %}
 
             <button class="btn btn-primary btn-lg btn-block"
                     type="submit"
-                    ng-show="sCtrl.select"
+                    ng-show="selectedCity"
                     style="margin-bottom: 20px"
                     formmethod="post">Generate</button>
 

@@ -40,14 +40,20 @@ def create_app():
         sup = [int(item) for item in request.form.getlist('supercat')]
         sub = [literal_eval(item) for item in request.form.getlist('subcat')]
 
-        dicts = [app.config['grids'][city].get(key, None)
-                 for key in (sub + sup)]
+        dicts = {key: app.config['grids'][city].get(key, None)
+                 for key in (sub + sup)}
+
+        colors = request.form['colors']
 
         if len(dicts) > 0:
-            name, legend = density_kml(
+            legend = {}
+            for data in dicts:
+                legend[data['name']] = data['color']
+            name = density_kml(
                 city,
                 dicts,
                 app.config['borders'],
+                colors,
                 scaling=lambda x: x ** (0.6)
             )
 
