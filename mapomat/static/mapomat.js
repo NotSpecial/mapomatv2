@@ -9,6 +9,11 @@ mapomat.controller('SelectController',
     $scope.selection = {};
     $scope.colors = [];
 
+    $scope.pickerConfig = {
+        control: 'wheel',
+        position: 'top right'
+    }
+
     var colorPicker = function(selection, superNames, subNames) {
       // search for selected 
       var selected = [];

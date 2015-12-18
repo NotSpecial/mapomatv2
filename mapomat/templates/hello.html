@@ -111,11 +111,11 @@
             </div>
             <br \><br \>
             <div class="row">
-                <div class="col-md-6" ng-repeat="color in colors" style="margin-bottom: 1em">
+                <div class="col-md-4" ng-repeat="color in colors" style="margin-bottom: 1em">
                     <div class="input-group">
                         <span class="input-group-addon">{{color.name}}</span>
                         <!--input colorpicker colorpicker-position="right" type="text" ng-model="color.color" style="backgroud-color:{{color.color}}" name="colors" value="{'key': {{color.key}}, 'color': {{color.color}} }"/-->
-                        <input minicolors name="colors" ng-model="color.color" value="{{color.color}}" type="hidden"/>
+                        <input minicolors="pickerConfig" name="colors" ng-model="color.color" value="{{color.color}}" type="hidden"/>
                     </div>
                 </div>
             </div>
