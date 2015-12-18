@@ -1,4 +1,4 @@
-var mapomat = angular.module('mapomat', ['ui', 'colorpicker.module']);
+var mapomat = angular.module('mapomat', ['ui', 'minicolors']);
 
 mapomat.controller('SelectController', 
   ['$window', '$scope', '$http', function($window, $scope, $http) {

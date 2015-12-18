@@ -13,14 +13,16 @@
     href= "{{ url_for('static', filename='favicon-16x16.png') }}"
     sizes="16x16">
 
-    <!-- bootstrap and angular -->
+    <!-- jQuery, bootstrap and angular -->
+    <script type="text/javascript" src="{{url_for('static', filename='jQuery/jquery-2.1.4.min.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
     <script src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
     <!-- color picker -->
-    <script src="{{ url_for('static', filename='colorpicker/bootstrap-colorpicker-module.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='colorpicker/colorpicker.css') }}"
+    <script type="text/javascript" src="{{url_for('static', filename='minicolors/angular-minicolors.js') }}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='minicolors/jquery.minicolors.js') }}"></script>
+    <link rel='stylesheet' href="{{ url_for('static', filename='minicolors/jquery.minicolors.css') }}">
 
     <!-- own scripts -->
     <script>
@@ -79,10 +81,10 @@
             </div>
             <br /><br />
             <div class="row">
-                <div
-                ng-repeat="(super, sublist) in cityCats[selectedCity]">
+                <div ng-repeat="(super, sublist) in cityCats[selectedCity]" >
                     <div ng-if="$index % 4 == 0" class="clearfix"></div>
                     <div class="col-md-3" style="margin-bottom: 1.5em">
+                    <!--div class="clearfix"></div-->
                         <h4> {{ superNames[super] }} </h2>
                         <hr style="margin-top: 0.5em; margin-bottom: 0.5em;
                         background-color: rgb(51, 122, 183);
@@ -93,7 +95,7 @@
                         value="{{ super }}"
                         ng-model="selection[super]"
                         ng-click="updateColors()"> 
-                            all businesses
+                            All Businesses
                         </input>
                         <div ng-repeat="sub in sublist">
                             <input type="checkbox" name="subcat"
@@ -103,51 +105,19 @@
                             <!-- super dirty hack where we have to produce some JSON to parse it later. shoudl think about other solution -->
                                 {{ subNames[super][sub] }}
                             </input>
-                            <!--
-=======
-                
-                class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            {{ superNames[super] }}
-                        </div>
-                        <div class="panel-body">
-
-                            <input type="checkbox" name="supercat"
-                            value="{{ super }}"
-                            ng-model="selection[super]"
-                            ng-click="updateColors()">
-                                all businesses
-                            </input>
-                            <div ng-repeat="sub in sublist">
-                                <input type="checkbox" name="subcat"
-                                value="({{super}}, {{sub}})"
-                                ng-model="selection['[' + super + ', ' + sub + ']']"
-                                ng-click="updateColors()">
-                            -->
-                                <!-- super dirty hack where we have to produce some JSON to parse it later. shoudl think about other solution -->
-                                <!--
-                                {{ subNames[super][sub] }}
-                                </input>
-                            </div>
->>>>>>> advanced_options
--->
                         </div>
                     </div>
+                </div>
             </div>
             <br \><br \>
             <div class="row">
-                <ul class="list-group">
-                    <li class="list-group-item" ng-repeat="color in colors">
-                        <div class="input-group">
-                            <span class="input-group-addon">{{color.name}}</span>
-                            <div class="input-group-addon" style="background-color: {{color.color}}; width: 100px;" ></div>
-                            <input colorpicker colorpicker-position="right" type="text" ng-model="color.color" 
-                            style="backgroud-color:{{color.color}}"
-                            name="colors" value="{'key': {{color.key}}, 'color': {{color.color}} }"/>
-                        </div>
-                    </li>
-                </ul>
+                <div class="col-md-6" ng-repeat="color in colors" style="margin-bottom: 1em">
+                    <div class="input-group">
+                        <span class="input-group-addon">{{color.name}}</span>
+                        <!--input colorpicker colorpicker-position="right" type="text" ng-model="color.color" style="backgroud-color:{{color.color}}" name="colors" value="{'key': {{color.key}}, 'color': {{color.color}} }"/-->
+                        <input minicolors name="colors" ng-model="color.color" value="{{color.color}}" type="hidden"/>
+                    </div>
+                </div>
             </div>
             {% endraw %}
 
