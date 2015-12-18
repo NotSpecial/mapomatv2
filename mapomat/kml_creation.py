@@ -1,10 +1,11 @@
 from __future__ import division
-from os import path
+from os import path, mkdir
 from .cache import cache_result
 from werkzeug import secure_filename
-from colorsys import hsv_to_rgb
 import numpy as np
 from simplekml import Kml
+from random import choice
+import string
 
 
 def region(businesses, cells, city, radius):
@@ -92,23 +93,14 @@ def make_dict(city, category, businesses, cells, supercat=True):
     return {'dict': cat_dict, 'max': maximum}
 
 
-def density_kml(city, dicts, borders, colors, folder='kml_files',
+def density_kml(city, dicts, borders, folder='results',
                 scaling=(lambda x: x)):
-
-    num_colors = len(dicts)
 
     def rgb_to_bgr(color):
         return "{rgb[4]}{rgb[5]}{rgb[2]}{rgb[3]}{rgb[0]}{rgb[1]}".format(
             rgb=color)
 
-    def split_colors(index):
-        hue = index / num_colors
-        (r, g, b) = hsv_to_rgb(hue, 1, 1)
-        return "{2:02x}{1:02x}{0:02x}".format(int(r * 255),
-                                              int(g * 255),
-                                              int(b * 255))
-
-    def add_folder(kml, data, index):
+    def add_folder(kml, data):
         def cell_to_color(value, color, scaling):
             norm_value = scaling(value)
             return '{0:02x}{1}'.format(int(norm_value * 200), color)
@@ -128,19 +120,15 @@ def density_kml(city, dicts, borders, colors, folder='kml_files',
 
     kml = Kml()
 
-    i = 0  # indexer for different colors
     for data in dicts:
-        kml = add_folder(kml, data, i)
-        i += 1
+        kml = add_folder(kml, data)
 
-    # save kml
-    kml_name = secure_filename(city) + "_"
-    for data in dicts:
-        kml_name += "x%s" % secure_filename(data['name'])
-    kml_name += ".kml"
+    identifier = ''.join(choice(string.ascii_lowercase + string.digits) \
+        for _ in range(20))
 
-    kml_name = secure_filename(kml_name)
-    kml_path = path.join(folder, kml_name)
+    mkdir(path.join(folder, identifier))
+
+    kml_path = path.join(folder, identifier, 'data.kml')
     kml.save(kml_path)
 
-    return kml_name
+    return identifier

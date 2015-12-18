@@ -5,6 +5,7 @@ from werkzeug import secure_filename
 from ast import literal_eval
 from os import path, makedirs, getcwd
 import pickle
+import json
 
 from .kml_creation import density_kml
 
@@ -24,6 +25,7 @@ def create_app():
         data = pickle.load(f)
 
     app.config.update(data)
+    app.config.update({'result_folder': 'results'})
 
     @app.route("/", methods=['GET'])
     def hello():
@@ -35,43 +37,71 @@ def create_app():
         )
 
     @app.route("/", methods=['POST'])
-    def result():
-        city = request.form['city']
-        sup = [int(item) for item in request.form.getlist('supercat')]
-        sub = [literal_eval(item) for item in request.form.getlist('subcat')]
+    def new_result():
+        city = request.json['city']
+        colors = request.json['colors']
+        result_folder = app.config['result_folder']
 
-        dicts = {key: app.config['grids'][city].get(key, None)
-                 for key in (sub + sup)}
-
-        colors = request.form['colors']
-
-        if len(dicts) > 0:
+        if len(colors) > 0:
+            # make legend and density-dicts
             legend = {}
-            for data in dicts:
-                legend[data['name']] = data['color']
-            name = density_kml(
+            dicts = []
+            for color in colors:
+                legend[color['name']] = color['color']
+                key = literal_eval(color['key'])
+                grid = app.config['grids'][city].get(key, None)
+                # remove the css '#' from color-string
+                grid['color'] = color['color'][1:]
+                dicts.append(grid)
+
+            identifier = density_kml(
                 city,
                 dicts,
                 app.config['borders'],
-                colors,
-                scaling=lambda x: x ** (0.6)
+                scaling=lambda x: x ** (0.6),
+                folder=result_folder
             )
 
         else:
-            name = ""
             legend = {"Nothing selected": "ffffff"}
+            identifier = 'nothing'
+
+        # add everything to info.json in the identifier folder
+        info_path = path.join(result_folder, identifier, 'info.json')
+        info = {'city': city,
+                'legend': legend,
+                'lat': app.config['citylatlon'][city]['lat'],
+                'lon': app.config['citylatlon'][city]['lon']}
+        with open(info_path, 'w') as info_file:
+            json.dump(info, info_file)
+            info_file.close()
+
+        return identifier
+
+    @app.route("/result/<identifier>", methods=['GET'])
+    def result(identifier):
+        # load info
+        data_path = path.join(app.config['result_folder'], identifier)
+        with open(path.join(data_path, 'info.json'), 'r') as info_file:
+            info = json.load(info_file)
+            info_file.close()
 
         return render_template('kml.html',
-                               lat=app.config['citylatlon'][city]['lat'],
-                               lon=app.config['citylatlon'][city]['lon'],
-                               kml=name,
-                               city=city,
-                               legend=legend)
+                               lat=info['lat'],
+                               lon=info['lon'],
+                               kml=path.join(data_path, 'data.kml'),
+                               identifier=identifier,
+                               city=info['city'],
+                               legend=info['legend'])
 
-    @app.route("/kml/<filename>", methods=['GET'])
-    def deliver(filename):
-        filename = secure_filename(filename)
-        kml_path = path.join(getcwd(), "kml_files", filename)
+    @app.route("/kml/<identifier>", methods=['GET'])
+    def deliver(identifier):
+        identifier = secure_filename(identifier)
+        kml_path = path.join(getcwd(),
+                             app.config['result_folder'],
+                             identifier,
+                             'data.kml')
+        print(kml_path)
         if path.exists(kml_path):
             return send_file(kml_path)
         else:

@@ -68,8 +68,10 @@ mapomat.controller('SelectController',
       };
 
       res = $http.post($scope.sendFormTo, data, config)
-      res.success(function() {
-        alert('success');});
+      res.success(function(data, status, headers, config) {
+        // load result window
+        $window.location.assign("result/" + data)
+      });
       res.error(function(response) {
         alert(response);
       });

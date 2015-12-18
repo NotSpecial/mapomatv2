@@ -53,7 +53,7 @@
 
     parser.parse();
 
-    var kmlUrl = "{{ url_for('deliver', filename=kml, _external=True) }}";
+    var kmlUrl = "{{ url_for('deliver', identifier=identifier, _external=True) }}";
     var kml = new KMLLayer(kmlUrl);
     map.addLayer(kml);
   });
@@ -72,13 +72,13 @@
         <h3>Results for {{ city }}</h3>
         <br /><br />
         {% for item in legend %}
-        <span style="color: #{{ legend[item] }}">{{ item }}<br />
+        <span style="color: {{ legend[item] }}">{{ item }}<br />
         {% endfor %}
         <br />
         <a class="btn btn-default" href="{{ url_for('hello') }}">
           Start again</a>
         <a class="btn btn-default"
-        href="{{ url_for('deliver', filename=kml) }}">
+        href="{{ url_for('deliver', identifier=identifier) }}">
           Download KML</a>
         <button type="button" class="btn btn-default pull-right"
         ng-click="lCtrl.show = false">
