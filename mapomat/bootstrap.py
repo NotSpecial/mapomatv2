@@ -40,6 +40,7 @@ def create_app():
     def new_result():
         city = request.json['city']
         colors = request.json['colors']
+        scaling = request.json['scaling']
         result_folder = app.config['result_folder']
 
         if len(colors) > 0:
@@ -58,7 +59,7 @@ def create_app():
                 city,
                 dicts,
                 app.config['borders'],
-                scaling=lambda x: x ** (0.6),
+                scaling=lambda x: x ** scaling,
                 folder=result_folder
             )
 

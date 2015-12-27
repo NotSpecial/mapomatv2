@@ -136,12 +136,11 @@
                             <label for="{{scaling.name}}"
                                 class="scaling">
                                 <input type="radio" 
-                                ng-model="selectedScaling" 
-                                value="{{scaling.exp}}"
-                                id="{{scaling.name}}"
+                                ng-model="$parent.selectedScaling" 
+                                ng-value="scaling.exp"
                                 name="scaling-radios">
                                 
-                                    {{scaling.name}}
+                                    {{ scaling.name }}
                                 
                                 <div class="function-gradient">
                                     <div class="gradient-item" ng-repeat="val in scaling.values" style="background-color: rgb({{val}}, {{val}}, {{val}});">

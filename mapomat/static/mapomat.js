@@ -18,6 +18,7 @@ mapomat.controller('SelectController',
     };
 
     // generate different scales for scaling functions
+    $scope.selectedScaling = 1.0 //default value
     $scope.scalings = [
         {name: 'broad', exp: 0.5},
         {name: 'linear', exp: 1.0}, 
@@ -78,7 +79,8 @@ mapomat.controller('SelectController',
       var data = {
         city: $scope.selectedCity,
         colors: $scope.colors,
-        selected: $scope.selection
+        selected: $scope.selection,
+        scaling: $scope.selectedScaling
       };
 
       var config = {
