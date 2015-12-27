@@ -132,11 +132,27 @@
                 <div class="container-fluid" ng-show="advancedOptions" style="pading:1em; margin-top:1em">
                     <div class="row">
                     <div class="col-md-4">
-                        Options for different scaling functions
+                        <div class="radio" ng-repeat="scaling in scalings">
+                            <label for="{{scaling.name}}"
+                                class="scaling">
+                                <input type="radio" 
+                                ng-model="selectedScaling" 
+                                value="{{scaling.exp}}"
+                                id="{{scaling.name}}"
+                                name="scaling-radios">
+                                
+                                    {{scaling.name}}
+                                
+                                <div class="function-gradient">
+                                    <div class="gradient-item" ng-repeat="val in scaling.values" style="background-color: rgb({{val}}, {{val}}, {{val}});">
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <!--div class="container-fluid"><div class="row"-->
-                            <div class="col-xs-6 color-object" ng-repeat="color in colors">
+                            <div class="col-md-6 color-object" ng-repeat="color in colors">
                                 <!--div class="color-object"-->
                                     <div class="colorpicker-container">
                                         <input minicolors="pickerConfig" 

@@ -15,7 +15,19 @@ mapomat.controller('SelectController',
         control: 'wheel',
         position: 'top right',
         theme: 'mapomat',
-    }
+    };
+
+    // generate different scales for scaling functions
+    $scope.scalings = [
+        {name: 'broad', exp: 0.5},
+        {name: 'linear', exp: 1.0}, 
+        {name: 'hotspots', exp: 2.0}
+    ];
+    for (var i=0; i<$scope.scalings.length; i++) {
+        $scope.scalings[i].values = expScale(
+            $scope.scalings[i].exp, 15
+        );
+    };
 
     var colorPicker = function(selection, superNames, subNames) {
       // search for selected 
@@ -154,4 +166,21 @@ var hslToHex = function(h, s, l){
     g_hex = componentToHex(Math.round(g * 255));
     b_hex = componentToHex(Math.round(b * 255));
     return '#' + r_hex + g_hex + b_hex;
+};
+
+var expScale = function(exp, numPoints) {
+    var ret = [];
+
+    for (var i=1; i<=numPoints; i++) {
+        ret.push(Math.pow(i, exp));
+    };
+
+    // norm to maximum <= 255 and reorder from high to low
+    var MAX = ret[numPoints - 1];
+    var FACTOR = 255.0 / MAX;
+    for (var i=0; i<numPoints; i++) {
+        ret[i] = 255 - Math.floor(FACTOR * ret[i]);
+    }
+
+    return ret;
 };

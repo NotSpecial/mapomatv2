@@ -1,9 +1,32 @@
+/* scalign function gradients */
+
+.scaling {
+    width: 200px;
+}
+
+.function-gradient {
+    margin-left: auto;
+    margin-right: 0px;
+    float: right;
+}
+
+.gradient-item {
+    height: 20px;
+    width: 5px;
+    float: left;
+}
+
+
+/* color-pickers */
+
 .color-object {
     /* the wrapper around each color picker and text */
-    margin-bottom: 1em;
+    margin-bottom: 10px;
+    margin-top: 10px;
     min-width: 200px;
     height: 28px;
     line-height: 28px;
+    padding-left: 0px;
 }
 
 .color-description {
