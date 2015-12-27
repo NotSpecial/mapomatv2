@@ -1,4 +1,5 @@
 .color-object {
+    /* the wrapper around each color picker and text */
     margin-bottom: 1em;
     min-width: 200px;
     height: 28px;
@@ -6,11 +7,13 @@
 }
 
 .color-description {
+    /* the text in a color object */
     margin-left: 10px;
     vertical-align: middle;
 }
 
 .colorpicker-container {
+    /* wrapper around a colorpicker to get positioning right */
     height: 28px;
     width: 28px;
     float: left;

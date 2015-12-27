@@ -10,6 +10,7 @@ mapomat.controller('SelectController',
     $scope.colors = [];
     $scope.advancedOptions = false;
 
+    // configuration for color picker
     $scope.pickerConfig = {
         control: 'wheel',
         position: 'top right',
