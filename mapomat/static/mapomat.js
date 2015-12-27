@@ -8,10 +8,12 @@ mapomat.controller('SelectController',
     $scope.sendFormTo = $window.sendFormTo;
     $scope.selection = {};
     $scope.colors = [];
+    $scope.advancedOptions = false;
 
     $scope.pickerConfig = {
         control: 'wheel',
-        position: 'top right'
+        position: 'top right',
+        theme: 'mapomat',
     }
 
     var colorPicker = function(selection, superNames, subNames) {

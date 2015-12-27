@@ -1,0 +1,47 @@
+.color-object {
+    margin-bottom: 1em;
+    min-width: 200px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.color-description {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.colorpicker-container {
+    height: 28px;
+    width: 28px;
+    float: left;
+}
+
+/* minicolors theme */
+
+.minicolors-theme-mapomat .minicolors-swatch {
+    top: 5px;
+    left: 5px;
+    width: 28px;
+    height: 28px;
+    border-radius: 5px;
+    float: left;
+}
+.minicolors-theme-mapomat.minicolors-position-right .minicolors-swatch {
+    left: auto;
+    right: 5px;
+}
+.minicolors-theme-mapomat.minicolors {
+    width: auto;
+    display: inline-block;
+}
+.minicolors-theme-mapomat .minicolors-input {
+    height: 20px;
+    width: auto;
+    display: inline-block;
+    padding-left: 26px;
+    border-radius: 5px;
+}
+.minicolors-theme-mapomat.minicolors-position-right .minicolors-input {
+    padding-right: 26px;
+    padding-left: inherit;
+}

@@ -19,10 +19,15 @@
     <script src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
+    <!-- own styles -->
+    <link rel='stylesheet' href="{{ url_for('static', filename='hello.css') }}">
+
     <!-- color picker -->
     <script type="text/javascript" src="{{url_for('static', filename='minicolors/angular-minicolors.js') }}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='minicolors/jquery.minicolors.js') }}"></script>
     <link rel='stylesheet' href="{{ url_for('static', filename='minicolors/jquery.minicolors.css') }}">
+
+
 
     <!-- own scripts -->
     <script>
@@ -33,6 +38,8 @@
         window.sendFormTo = "{{ url_for('hello') }}"
     </script>
     <script src="{{ url_for('static', filename='mapomat.js') }}"></script>
+
+    >
 </head>
 <body>
     <div id="wrap">
@@ -85,7 +92,7 @@
                     <div ng-if="$index % 4 == 0" class="clearfix"></div>
                     <div class="col-md-3" style="margin-bottom: 1.5em">
                     <!--div class="clearfix"></div-->
-                        <h4> {{ superNames[super] }} </h2>
+                        <h4> {{ superNames[super] }} </h4>
                         <hr style="margin-top: 0.5em; margin-bottom: 0.5em;
                         background-color: rgb(51, 122, 183);
                         height: 1px;
@@ -110,12 +117,41 @@
                 </div>
             </div>
             <br \><br \>
-            <div class="row">
-                <div class="col-md-4" ng-repeat="color in colors" style="margin-bottom: 1em">
-                    <div class="input-group">
-                        <span class="input-group-addon">{{color.name}}</span>
-                        <!--input colorpicker colorpicker-position="right" type="text" ng-model="color.color" style="backgroud-color:{{color.color}}" name="colors" value="{'key': {{color.key}}, 'color': {{color.color}} }"/-->
-                        <input minicolors="pickerConfig" name="colors" ng-model="color.color" value="{{color.color}}" type="hidden"/>
+            <div class="" ng-show="selectedCity">
+                <div class="" ng-click="advancedOptions = !advancedOptions">
+                    <span ng-hide="advancedOptions" class="glyphicon glyphicon-chevron-right" aria-hide="true"></span>
+                    <span ng-show="advancedOptions" class="glyphicon glyphicon-chevron-down" aria-hide="true"></span>
+                    &nbsp;Advanced Options
+                </div>
+
+                <hr style="margin-top: 0.5em; margin-bottom: 0.5em;
+                        background-color: rgb(51, 122, 183);
+                        height: 1px;
+                        color: rgb(51, 122, 183); border: none" ng-show="advancedOptions">
+                       
+                <div class="container-fluid" ng-show="advancedOptions" style="pading:1em; margin-top:1em">
+                    <div class="row">
+                    <div class="col-md-4">
+                        Options for different scaling functions
+                    </div>
+                    <div class="col-md-8">
+                        <!--div class="container-fluid"><div class="row"-->
+                            <div class="col-xs-6 color-object" ng-repeat="color in colors">
+                                <!--div class="color-object"-->
+                                    <div class="colorpicker-container">
+                                        <input minicolors="pickerConfig" 
+                                        name="colors" 
+                                        ng-model="color.color" 
+                                        value="{{color.color}}" 
+                                        type="hidden"
+                                        style="margin-left: 10px; width: 28px; height: 28px; float:left; "
+                                        width="28px" height="28px"/>
+                                    </div>
+                                    <span class="color-description">{{color.name}}</span>
+                                <!--/div-->
+                            </div>
+                        <!--/div></div-->
+                    </div>
                     </div>
                 </div>
             </div>
