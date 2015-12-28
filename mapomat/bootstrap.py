@@ -15,9 +15,6 @@ def create_app():
     temp_fold = path.join(_ROOT, "templates")
     app = Flask(__name__, template_folder=temp_fold)
 
-    # Make dir
-    if not path.exists("kml_files"):
-        makedirs("kml_files")
 
     with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
         # u = pickle._Unpickler(f)
@@ -25,7 +22,16 @@ def create_app():
         data = pickle.load(f)
 
     app.config.update(data)
-    app.config.update({'result_folder': 'results'})
+
+    # Make dir
+    result_folder = app.config['result_folder']
+    if not path.exists(result_folder):
+        makedirs(result_folder)
+    if not path.exists(path.join(result_folder, 'nothing')):
+        makedirs(path.join(result_folder, 'nothing'))
+
+    
+    #app.config.update({'result_folder': 'results'})
 
     @app.route("/", methods=['GET'])
     def hello():
