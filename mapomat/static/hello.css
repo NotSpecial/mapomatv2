@@ -1,0 +1,73 @@
+/* scalign function gradients */
+
+.scaling {
+    width: 200px;
+}
+
+.function-gradient {
+    margin-left: auto;
+    margin-right: 0px;
+    float: right;
+}
+
+.gradient-item {
+    height: 20px;
+    width: 5px;
+    float: left;
+}
+
+
+/* color-pickers */
+
+.color-object {
+    /* the wrapper around each color picker and text */
+    margin-bottom: 10px;
+    margin-top: 10px;
+    min-width: 200px;
+    height: 28px;
+    line-height: 28px;
+    padding-left: 0px;
+}
+
+.color-description {
+    /* the text in a color object */
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.colorpicker-container {
+    /* wrapper around a colorpicker to get positioning right */
+    height: 28px;
+    width: 28px;
+    float: left;
+}
+
+/* minicolors theme */
+
+.minicolors-theme-mapomat .minicolors-swatch {
+    top: 5px;
+    left: 5px;
+    width: 28px;
+    height: 28px;
+    border-radius: 5px;
+    float: left;
+}
+.minicolors-theme-mapomat.minicolors-position-right .minicolors-swatch {
+    left: auto;
+    right: 5px;
+}
+.minicolors-theme-mapomat.minicolors {
+    width: auto;
+    display: inline-block;
+}
+.minicolors-theme-mapomat .minicolors-input {
+    height: 20px;
+    width: auto;
+    display: inline-block;
+    padding-left: 26px;
+    border-radius: 5px;
+}
+.minicolors-theme-mapomat.minicolors-position-right .minicolors-input {
+    padding-right: 26px;
+    padding-left: inherit;
+}

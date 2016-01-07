@@ -146,6 +146,15 @@ data = {
     'city_categories': city_categories
 }
 
+print('additional configuration ...')
+result_folder = input("folder to store user requests ('results'): ")
+if len(result_folder) == 0:
+    result_folder = 'results'
+config = {
+    'result_folder': result_folder
+}
+data.update(config)
+
 with open("mapomat/mapomat.dat", 'wb') as f:
     # force latin1 encoding
     # p = pickle._Pickler(f)
