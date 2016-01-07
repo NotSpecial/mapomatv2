@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 
-<html ng-app="mapomat">
+<html ng-app="legend">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
   <title>Map-o-Mat results for {{ city }}</title>
+
   <!-- angular -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-  <script src="{{ url_for('static', filename='mapomat.js') }}?2"></script>
+
+  <!-- Create the app and controller -->
+  <script>
+  var legend = angular.module('legend', []);
+
+  legend.controller('LegendController', function LegendController() {
+        this.show = true
+  });
+  </script>
+
 
   <link rel="stylesheet" href="http://js.arcgis.com/3.14/dijit/themes/tundra/tundra.css">
   <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
