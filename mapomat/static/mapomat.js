@@ -100,7 +100,7 @@ mapomat.controller('SelectController',
     };
 }]);
 
-var legend = angular.module('mapomat', []);
+var legend = angular.module('legend', []);
 
 legend.controller('LegendController', function LegendController() {
         this.show = true
