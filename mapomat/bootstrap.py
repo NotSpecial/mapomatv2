@@ -15,7 +15,6 @@ def create_app():
     temp_fold = path.join(_ROOT, "templates")
     app = Flask(__name__, template_folder=temp_fold)
 
-
     with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
         # u = pickle._Unpickler(f)
         # u.encoding = 'latin1'
@@ -30,8 +29,7 @@ def create_app():
     if not path.exists(path.join(result_folder, 'nothing')):
         makedirs(path.join(result_folder, 'nothing'))
 
-    
-    #app.config.update({'result_folder': 'results'})
+    # app.config.update({'result_folder': 'results'})
 
     @app.route("/", methods=['GET'])
     def hello():

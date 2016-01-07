@@ -1,6 +1,6 @@
 var mapomat = angular.module('mapomat', ['ui', 'minicolors']);
 
-mapomat.controller('SelectController', 
+mapomat.controller('SelectController',
   ['$window', '$scope', '$http', function($window, $scope, $http) {
     $scope.cityCats = $window.cityCategories;
     $scope.superNames = $window.superCatNames;
@@ -21,7 +21,7 @@ mapomat.controller('SelectController',
     $scope.selectedScaling = 1.0 //default value
     $scope.scalings = [
         {name: 'broad', exp: 0.5},
-        {name: 'linear', exp: 1.0}, 
+        {name: 'linear', exp: 1.0},
         {name: 'hotspots', exp: 2.0}
     ];
     for (var i=0; i<$scope.scalings.length; i++) {
@@ -31,7 +31,7 @@ mapomat.controller('SelectController',
     };
 
     var colorPicker = function(selection, superNames, subNames) {
-      // search for selected 
+      // search for selected
       var selected = [];
       for (var key in selection) {
         if (selection[key]) {
@@ -39,7 +39,7 @@ mapomat.controller('SelectController',
           selected.push(key);
         }
       }
-      
+
       // update colors
       var colors = [];
       var numcolors = selected.length;
@@ -69,7 +69,7 @@ mapomat.controller('SelectController',
       }
       return colors;
     };
-  
+
     $scope.updateColors = function() {
       $scope.colors = colorPicker($scope.selection, $scope.superNames,
         $scope.subNames);
@@ -100,10 +100,12 @@ mapomat.controller('SelectController',
     };
 }]);
 
+var legend = angular.module('mapomat', []);
 
-mapomat.controller('LegendController', function LegendController() {
+legend.controller('LegendController', function LegendController() {
         this.show = true
     });
+
 /*
 mapomat.controller('FooterController', function FooterController($window) {
 
