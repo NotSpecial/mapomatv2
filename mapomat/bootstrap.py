@@ -18,9 +18,12 @@ def create_app():
     with open(path.join(_ROOT, "mapomat.dat"), 'rb') as f:
         # u = pickle._Unpickler(f)
         # u.encoding = 'latin1'
+        print("here")
         data = pickle.load(f)
 
     app.config.update(data)
+
+    print(data.keys())
 
     # Make dir
     result_folder = app.config['result_folder']

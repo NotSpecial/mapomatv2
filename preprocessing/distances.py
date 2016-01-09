@@ -186,7 +186,8 @@ class CellCollection:
         return self.cells.copy()
 
     def get_borders(self):
-        return self.longitudes.copy(), self.latitudes.copy()
+        # Safe it as list so we dont need numpy to load the data
+        return self.longitudes.copy().tolist(), self.latitudes.copy().tolist()
 
     def __str__(self):
         d = self.to_dict()

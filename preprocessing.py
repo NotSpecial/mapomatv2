@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from mapomat.import_data import import_businesses as get_busi
-from mapomat.supercats import add_supercats as get_cats
-from mapomat.distances import make_cell_collection
+from preprocessing.import_data import import_businesses as get_busi
+from preprocessing.supercats import add_supercats as get_cats
+from preprocessing.distances import make_cell_collection
 
-import pickle
+import json
+
+from ast import literal_eval
 
 print("importing data ...")
 # 1: Getting raw data
@@ -72,26 +74,31 @@ for city in cities:
             cell_counts = (gr.get_group(key)
                            .groupby('cell_coord')['city'].count())
 
-            city_grids[city][key] = {}
+            # save all keys as string
+            # this way we can save the data as json and dont have to convert
+            # web form inputs back (can just use the strings)
+            newkey = str(key)
+
+            city_grids[city][newkey] = {}
 
             # Name
-            city_grids[city][key]['name'] = (
+            city_grids[city][newkey]['name'] = (
                 names[key])
 
             # Max
-            city_grids[city][key]['max'] = (
-                cell_counts.max())
+            city_grids[city][newkey]['max'] = (
+                int(cell_counts.max()))
 
             # Cell dict
             cell_dict = {}
             for x, y in cell_counts.index:
                 try:
-                    cell_dict[x][y] = cell_counts[(x, y)]
+                    cell_dict[int(x)][int(y)] = int(cell_counts[(x, y)])
                 except KeyError:
                     # Key error only if x is not in keys yet
-                    cell_dict[x] = {y: cell_counts[(x, y)]}
+                    cell_dict[int(x)] = {int(y): int(cell_counts[(x, y)])}
 
-            city_grids[city][key]['dict'] = cell_dict
+            city_grids[city][newkey]['dict'] = cell_dict
 
     # Super
     make_data("super_category")
@@ -118,24 +125,31 @@ for superkey in box:
     categories[superkey] = (
         {key: subbox[key]['name'] for key in subbox if key != -1})
 
+# TODO: The following part is not very pretty
+# The different data dicts should be consistent
+# As of now, the cat dicts are nested dicts for super and sub categories
+# The grid dict uses ints for super cats and tuples for subcats
+
 # Create city dict. Make sure to cast all keys form numpy.int to int
 # json lib has problems with numpy int and doesnt parse sometimes
 city_categories = {city: {} for city in cities}
 for city in cities:
-    # Iterate twice: Once to find integers fo
+    # Iterate twice: Once to find integers for super cats
     for key in city_grids[city]:  # categories for city
-        if type(key) == tuple:
+        if "(" in key:  # keys are str, if ( is in it its a tuple
             continue
         # Create super categories
         city_categories[city][int(key)] = []
 
     for key in city_grids[city]:  # categories for city
-        if type(key) != tuple:
+        if "(" not in key:
             continue
+        cat_tuple = literal_eval(key)
         # Create super categories
-        city_categories[city][int(key[0])].append(int(key[1]))
+        city_categories[city][int(cat_tuple[0])].append(int(cat_tuple[1]))
 
 
+# Save data
 print('saving data ...')
 data = {
     'citylatlon': citylatlon,
@@ -146,40 +160,8 @@ data = {
     'city_categories': city_categories
 }
 
-print('additional configuration ...')
-result_folder = input("folder to store user requests ('results'): ")
-if len(result_folder) == 0:
-    result_folder = 'results'
-config = {
-    'result_folder': result_folder
-}
-data.update(config)
-
-with open("mapomat/mapomat.dat", 'wb') as f:
+with open("mapomat/mapomat.json", 'w') as f:
     # force latin1 encoding
     # p = pickle._Pickler(f)
     # p.encoding = 'latin1'
-    pickle.dump(data, f)
-
-
-""" Old version
-# Save data into dictionary by city
-city_grids = {}
-for city in cities:
-    print('processing ' + city + ' ...')
-    city_grids[city] = {}
-
-    # first supercats
-    for superkey in box:
-        data = make_dict(city, superkey, busi, cells, supercat=True)
-        if len(data['dict']) > 0:
-            data['name'] = box[superkey]['name']
-            city_grids[city][superkey] = data
-
-    # sub-categories
-    for combo in combos:
-        data = make_dict(city, combo, busi, cells, supercat=False)
-        if len(data['dict']) > 0:
-            data['name'] = combos[combo]
-            city_grids[city][combo] = data
-"""
+    json.dump(data, f)

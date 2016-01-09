@@ -1,4 +1,4 @@
-from mapomat.bootstrap import create_app
+from mapomat import create_app
 
 application = create_app()
 
