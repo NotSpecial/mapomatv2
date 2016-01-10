@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-from os import path, mkdir
+from os import path
 from simplekml import Kml
 
 
@@ -27,8 +27,9 @@ def dict_to_kml(kml, borders, cell_dict, color_mapper, *args):
     return kml
 
 
-def density_kml(folder, filename, city, dicts, borders,
+def density_kml(kml_path, city, dicts, borders,
                 scaling=(lambda x: x)):
+
     def rgb_to_bgr(color):
         return "{rgb[4]}{rgb[5]}{rgb[2]}{rgb[3]}{rgb[0]}{rgb[1]}".format(
             rgb=color)
@@ -56,7 +57,4 @@ def density_kml(folder, filename, city, dicts, borders,
     for data in dicts:
         kml = add_folder(kml, data)
 
-    mkdir(path.join(folder, filename))
-
-    kml_path = path.join(folder, filename, 'data.kml')
     kml.save(kml_path)

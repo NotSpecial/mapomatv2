@@ -3,11 +3,8 @@ from flask import Flask, render_template, request, send_file, abort
 from werkzeug import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 
-from os import path, makedirs, getcwd
+from os import path, makedirs
 import json
-
-import random
-import string
 
 from .kml_creation import density_kml
 
@@ -41,23 +38,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % app.config['DB_PATH']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Create db if necessary
-if not path.exists(app.config['DB_PATH']):
-    db.create_all()
-
-city_max_length = app.config['city_categories']
+# Determine longest city string for database field length
+city_max_length = max([len(key) for key in app.config['city_categories']])
 
 
 class KmlInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city = db.Column(db.Unicode(city_max_length))
     legend = db.Column(db.Text)
+    color_info = db.Column(db.Text)
+    scaling = db.Column(db.Float)
     lat = db.Column(db.Float)
     lon = db.Column(db.Float)
 
     def __init__(self, **kvargs):
         for key, item in kvargs.items():
             setattr(self, key, item)
+
+# Create db if necessary
+if not path.exists(app.config['DB_PATH']):
+    db.create_all()
 
 
 # define app routes
@@ -76,85 +76,88 @@ def hello():
 def new_result():
     city = request.json['city']
     colors = request.json['colors']
-    scaling = request.json['scaling']
-    result_folder = app.config['result_folder']
-
-    identifier = (''.join(random.choice(string.ascii_lowercase + string
-                  .digits) for _ in range(20)))
+    scaling = float(request.json['scaling'])
 
     if len(colors) > 0:
         # make legend and density-dicts
         legend = {}
-        dicts = []
         for color in colors:
             legend[color['name']] = color['color']
-            key = color['key']
-            grid = app.config['grids'][city].get(key, None)
-
-            # remove the css '#' from color-string
-            grid['color'] = color['color'][1:]
-            dicts.append(grid)
-
-        density_kml(
-            result_folder,
-            identifier,
-            city,
-            dicts,
-            app.config['borders'],
-            scaling=lambda x: x ** scaling,
-        )
-
     else:
         legend = {"Nothing selected": "ffffff"}
-        identifier = 'nothing'
 
-    # add everything to info.json in the identifier folder
-    info_path = path.join(result_folder, identifier, 'info.json')
-    info = {'city': city,
-            'legend': json.dumps(legend),
-            'lat': app.config['citylatlon'][city]['lat'],
-            'lon': app.config['citylatlon'][city]['lon']}
+    color_info = (
+        {item['key']: item['color'] for item in colors})
 
-    from pprint import pprint
-    pprint(info)
-    print(type(info['lat']))
+    # Save info_data
+    info_data = {'city': city,
+                 'legend': json.dumps(legend),
+                 'color_info': json.dumps(color_info),
+                 'scaling': scaling,
+                 'lat': app.config['citylatlon'][city]['lat'],
+                 'lon': app.config['citylatlon'][city]['lon']}
 
-    with open(info_path, 'w') as info_file:
-        json.dump(info, info_file)
-        info_file.close()
+    info = KmlInfo(**info_data)
 
-    return identifier
+    db.session.add(info)
+    db.session.commit()
+
+    return str(info.id)
 
 
 @app.route("/result/<identifier>", methods=['GET'])
 def result(identifier):
+    identifier = secure_filename(identifier)
     # load info
     data_path = path.join(app.config['result_folder'], identifier)
-    if not path.exists(data_path):
+
+    # Load info from db
+    info = db.session.query(KmlInfo).get(identifier)
+
+    # If identifier is invalid return 404
+    if info is None:
         abort(404)
 
-    with open(path.join(data_path, 'info.json'), 'r') as info_file:
-        info = json.load(info_file)
-        info_file.close()
-
     return render_template('kml.html',
-                           lat=info['lat'],
-                           lon=info['lon'],
+                           lat=info.lat,
+                           lon=info.lon,
                            kml=path.join(data_path, 'data.kml'),
-                           identifier=identifier,
-                           city=info['city'],
-                           legend=json.loads(info['legend']))
+                           identifier=str(info.id),
+                           city=info.city,
+                           legend=json.loads(info.legend))
 
 
 @app.route("/kml/<identifier>.kml", methods=['GET'])
 def deliver(identifier):
     identifier = secure_filename(identifier)
-    kml_path = path.join(getcwd(),
-                         app.config['result_folder'],
-                         identifier,
-                         'data.kml')
+    kml_path = path.join(app.config['result_folder'],
+                         '%s.kml' % identifier)
 
-    if path.exists(kml_path):
-        return send_file(kml_path)
-    else:
+    # Load info from db
+    info = db.session.query(KmlInfo).get(identifier)
+
+    # If identifier is invalid return 404
+    if info is None:
         abort(404)
+
+    if len(info.color_info) > 0:
+        # make legend and density-dicts
+        dicts = []
+        for key, color in json.loads(info.color_info).items():
+            grid = app.config['grids'][info.city].get(key, None)
+
+            # remove the css '#' from color-string
+            grid['color'] = color[1:]
+            dicts.append(grid)
+
+    # Create kml
+    if not path.exists(kml_path):
+        density_kml(
+            kml_path,
+            info.city,
+            dicts,
+            app.config['borders'],
+            scaling=lambda x: x ** info.scaling,
+        )
+
+    return send_file(kml_path)
