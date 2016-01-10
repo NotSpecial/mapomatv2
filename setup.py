@@ -16,7 +16,7 @@ setup(
     platforms=["any"],
     test_suite="amivapi.tests",
     package_data = {
-        '': ['*.svg', '*.png', '*.ico', '*.html', '*.js', '*.dat']
+        '': ['*.svg', '*.png', '*.ico', '*.html', '*.js', '*.json']
     },
     install_requires = [],
     packages=find_packages(),
