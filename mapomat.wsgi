@@ -1,6 +1,4 @@
-from mapomat import create_app
-
-application = create_app()
+from mapomat import app as application
 
 # Get better logs in apache by propagation exceptions
 # AFAIK they will NOT be shown to the user by mod_wsgi
