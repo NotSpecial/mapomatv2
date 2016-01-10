@@ -35,8 +35,15 @@ if not path.exists(result_folder):
 
 # add db, define db class
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['DB_PATH'] = path.join(_ROOT, "mapomat.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % app.config['DB_PATH']
+# Make annoying warning go away
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Create db if necessary
+if not path.exists(app.config['DB_PATH']):
+    db.create_all()
 
 city_max_length = app.config['city_categories']
 
@@ -48,9 +55,9 @@ class KmlInfo(db.Model):
     lat = db.Column(db.Float)
     lon = db.Column(db.Float)
 
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
+    def __init__(self, **kvargs):
+        for key, item in kvargs.items():
+            setattr(self, key, item)
 
 
 # define app routes
