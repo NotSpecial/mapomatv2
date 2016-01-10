@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+from os import path, makedirs, listdir, remove
+from operator import itemgetter
+import json
+
 from flask import Flask, render_template, request, send_file, abort
 from werkzeug import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 
-from os import path, makedirs
-import json
-
 from .kml_creation import density_kml
+from .settings import FILE_LIMIT
 
 
 # initialize app
@@ -23,11 +25,13 @@ with open(path.join(_ROOT, "mapomat.json"), 'r') as f:
 app.config.update(data)
 
 # Make dir
-result_folder = path.join(_ROOT, "results")
-app.config['result_folder'] = result_folder
+RESULT_FOLDER = path.join(_ROOT, "results")
+app.config['RESULT_FOLDER'] = RESULT_FOLDER
 
-if not path.exists(result_folder):
-    makedirs(result_folder)
+app.config['FILE_LIMIT'] = FILE_LIMIT
+
+if not path.exists(RESULT_FOLDER):
+    makedirs(RESULT_FOLDER)
 
 
 # add db, define db class
@@ -109,7 +113,7 @@ def new_result():
 def result(identifier):
     identifier = secure_filename(identifier)
     # load info
-    data_path = path.join(app.config['result_folder'], identifier)
+    data_path = path.join(app.config['RESULT_FOLDER'], identifier)
 
     # Load info from db
     info = db.session.query(KmlInfo).get(identifier)
@@ -130,8 +134,6 @@ def result(identifier):
 @app.route("/kml/<identifier>.kml", methods=['GET'])
 def deliver(identifier):
     identifier = secure_filename(identifier)
-    kml_path = path.join(app.config['result_folder'],
-                         '%s.kml' % identifier)
 
     # Load info from db
     info = db.session.query(KmlInfo).get(identifier)
@@ -140,17 +142,17 @@ def deliver(identifier):
     if info is None:
         abort(404)
 
-    if len(info.color_info) > 0:
-        # make legend and density-dicts
-        dicts = []
-        for key, color in json.loads(info.color_info).items():
-            grid = app.config['grids'][info.city].get(key, None)
+    # make legend and density-dicts
+    dicts = []
+    for key, color in json.loads(info.color_info).items():
+        grid = app.config['grids'][info.city].get(key, None)
 
-            # remove the css '#' from color-string
-            grid['color'] = color[1:]
-            dicts.append(grid)
+        # remove the css '#' from color-string
+        grid['color'] = color[1:]
+        dicts.append(grid)
 
     # Create kml
+    kml_path = path.join(app.config['RESULT_FOLDER'], '%s.kml' % identifier)
     if not path.exists(kml_path):
         density_kml(
             kml_path,
@@ -159,5 +161,21 @@ def deliver(identifier):
             app.config['borders'],
             scaling=lambda x: x ** info.scaling,
         )
+
+        # file limiter
+        results = listdir(app.config['RESULT_FOLDER'])
+        if len(results) > app.config['FILE_LIMIT']:
+            # Delete last accessed file
+            access_list = []
+            for filename in results:
+                filepath = path.join(app.config['RESULT_FOLDER'], filename)
+                access_list.append((filepath, path.getatime(filepath)))
+
+            # Sort by access time and take first element (least accessed)
+            # Take first key of tuple (path)
+            access_list.sort(key=itemgetter(1))
+            last_accessed_path = access_list[0][0]
+
+            remove(last_accessed_path)
 
     return send_file(kml_path)
