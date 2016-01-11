@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="mapomat",
-    version="0.1",
+    version="1.0",
     author="Hermann Blum and Alexander Dietmüller",
     author_email="adietmueller@student.ethz.ch",
     description=("A tool to visualize yelp data."),
