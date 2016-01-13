@@ -36,6 +36,7 @@
         window.superCatNames = {{ super_categories|tojson }}
         window.subCatNames = {{ categories|tojson }}
         window.sendFormTo = "{{ url_for('hello') }}"
+        window.resultsUrl = "{{ url_for('result', identifier="") }}"
     </script>
     <script src="{{ url_for('static', filename='mapomat.js') }}"></script>
 </head>
