@@ -6,6 +6,7 @@ mapomat.controller('SelectController',
     $scope.superNames = $window.superCatNames;
     $scope.subNames = $window.subCatNames;
     $scope.sendFormTo = $window.sendFormTo;
+    $scope.resultsUrl = $window.resultsUrl
     $scope.selection = {};
     $scope.colors = [];
     $scope.advancedOptions = false;
@@ -92,7 +93,7 @@ mapomat.controller('SelectController',
       res = $http.post($scope.sendFormTo, data, config)
       res.success(function(data, status, headers, config) {
         // load result window
-        $window.location.assign("result/" + data)
+        $window.location.assign($scope.resultsUrl + data)
       });
       res.error(function(response) {
         alert(response);
