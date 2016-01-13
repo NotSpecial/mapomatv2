@@ -79,7 +79,7 @@
                 <div class="col-md-4 col-md-offset-4">
                     <select name="city" class="form-control"
                     ng-model="selectedCity"
-                    ng-change="selection = []">
+                    ng-change="selection = {}; colors = [];">
                         <option ng-repeat="(city, dict) in cityCats"
                         value="{{ city }}">{{ city }}</option>
                         <option value="">-- select a city to start --</option>
