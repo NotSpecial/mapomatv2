@@ -14,7 +14,7 @@ mapomat.controller('SelectController',
     // configuration for color picker
     $scope.pickerConfig = {
         control: 'wheel',
-        position: 'top right',
+        position: 'top left',
         theme: 'mapomat',
     };
 
